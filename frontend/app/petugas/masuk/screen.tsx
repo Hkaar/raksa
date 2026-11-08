@@ -13,14 +13,14 @@ import { ApiError, officerLogin, officerShortcut, type LoginResponse } from "@/l
 import { useI18n } from "@/lib/i18n/provider"
 import { saveOfficerSession } from "@/lib/officer-session"
 
-type Errors = { username?: string; password?: string }
+type Errors = { email?: string; password?: string }
 
 /** Officer sign-in (pen `UTLPY`). Authenticates against the backend `/officer/auth/*`. */
 export function OfficerLoginScreen() {
   const { m } = useI18n()
   const copy = m.officer.login
   const router = useRouter()
-  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
@@ -48,10 +48,10 @@ export function OfficerLoginScreen() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    const trimmed = username.trim()
+    const trimmed = email.trim()
     if (!trimmed || !password) {
       setErrors({
-        username: trimmed ? undefined : m.common.required,
+        email: trimmed ? undefined : m.common.required,
         password: password ? undefined : m.common.required,
       })
       return
@@ -72,7 +72,7 @@ export function OfficerLoginScreen() {
           noValidate
           onSubmit={submit}
           aria-labelledby={titleId}
-          className="flex w-full max-w-[440px] flex-col gap-7 rounded-xl border border-border bg-card p-6 sm:p-10"
+          className="flex w-full max-w-[440px] flex-col gap-7 rounded-xl bg-card p-6 outline-1 -outline-offset-1 outline-border sm:p-10"
         >
           <div className="flex flex-col gap-2">
             <h1 id={titleId} className="text-[32px]/[35px] font-bold text-foreground">
@@ -82,17 +82,18 @@ export function OfficerLoginScreen() {
           </div>
           <div className="flex flex-col gap-3">
             <LabeledInput
-              label={copy.usernameLabel}
-              type="text"
+              label={copy.emailLabel}
+              type="email"
+              inputMode="email"
               autoComplete="username"
               autoCapitalize="none"
               spellCheck={false}
-              placeholder={copy.usernamePlaceholder}
-              value={username}
-              error={errors.username}
+              placeholder={copy.emailPlaceholder}
+              value={email}
+              error={errors.email}
               onChange={(e) => {
-                setUsername(e.target.value)
-                if (errors.username) setErrors((prev) => ({ ...prev, username: undefined }))
+                setEmail(e.target.value)
+                if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }))
               }}
             />
             <LabeledInput
@@ -132,14 +133,15 @@ export function OfficerLoginScreen() {
               </button>
             </div>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col items-center gap-2">
             <Button type="submit" className="w-full" disabled={pending} aria-busy={pending}>
               {copy.submit}
             </Button>
+            {/* Not in the design (`UTLPY`): kept as a Button/Teks so the demo sign-in stays reachable. */}
             <Button
               type="button"
-              variant="secondary"
-              className="w-full"
+              variant="link"
+              size="sm"
               disabled={pending}
               aria-busy={pending}
               onClick={() => void signIn(officerShortcut)}

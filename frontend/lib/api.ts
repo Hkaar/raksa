@@ -116,8 +116,12 @@ function postJson<T>(path: string, body: unknown): Promise<T> {
 
 const bearer = (token: string) => ({ Authorization: `Bearer ${token}` })
 
-export const officerLogin = (username: string, password: string) =>
-  postJson<LoginResponse>("/officer/auth/login", { username, password })
+/** The backend accepts exactly one of `email` or `username`; anything with an "@" is sent as email. */
+export const officerLogin = (identifier: string, password: string) =>
+  postJson<LoginResponse>(
+    "/officer/auth/login",
+    identifier.includes("@") ? { email: identifier, password } : { username: identifier, password },
+  )
 
 export const officerShortcut = () =>
   request<LoginResponse>("/officer/auth/shortcut", { method: "POST" })

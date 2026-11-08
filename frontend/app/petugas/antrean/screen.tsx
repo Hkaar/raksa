@@ -246,7 +246,7 @@ export function OfficerQueueScreen() {
           </motion.ul>
         </div>
 
-        <p className="text-sm text-muted-foreground">{copy.footnote}</p>
+        <p className="hidden text-sm text-muted-foreground md:block">{copy.footnote}</p>
       </div>
     </Screen>
     </OfficerGuard>
