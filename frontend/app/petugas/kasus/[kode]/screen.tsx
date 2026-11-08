@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { AppHeaderDesktop } from "@/components/raksa/app-header-desktop"
 import { ChoiceGroup, ChoiceItem } from "@/components/raksa/choice-group"
 import { ObservationTimeline } from "@/components/raksa/observation-timeline"
+import { OfficerGuard } from "@/components/raksa/officer-guard"
 import { Screen } from "@/components/raksa/screen"
 import { CategoryBadge, EscalationBadge, InfoBadge, SavedBadge, UrgencyBadge } from "@/components/raksa/status-badges"
 import { Badge } from "@/components/ui/badge"
@@ -111,6 +112,7 @@ export function OfficerCaseScreen({ code }: { code: string }) {
   const obs = view.observation
 
   return (
+    <OfficerGuard>
     <Screen layout="immersive">
       <AppHeaderDesktop />
       <div className="flex w-full flex-1 flex-col items-start gap-5 px-4 pt-6 pb-10 md:px-8 lg:px-10">
@@ -278,5 +280,6 @@ export function OfficerCaseScreen({ code }: { code: string }) {
         </div>
       </div>
     </Screen>
+    </OfficerGuard>
   )
 }

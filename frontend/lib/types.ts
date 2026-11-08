@@ -163,7 +163,7 @@ export type VaccineRow = {
 }
 
 export type DemoData = {
-  meta: { now: string; officerAccount: { email: string; password: string }; siteUrl: string }
+  meta: { now: string; siteUrl: string }
   kecamatan: Kecamatan[]
   rabiesCenters: RabiesCenter[]
   /** Demo "Lokasi Anda" (Dauh Puri, Denpasar Barat); used when no nearby real position is known. */

@@ -9,39 +9,54 @@ import { AppHeaderDesktop } from "@/components/raksa/app-header-desktop"
 import { LabeledInput } from "@/components/raksa/labeled-input"
 import { Screen } from "@/components/raksa/screen"
 import { Button } from "@/components/ui/button"
-import { demo } from "@/lib/demo-data"
+import { ApiError, officerLogin, officerShortcut, type LoginResponse } from "@/lib/api"
 import { useI18n } from "@/lib/i18n/provider"
+import { saveOfficerSession } from "@/lib/officer-session"
 
-type Errors = { email?: string; password?: string }
+type Errors = { username?: string; password?: string }
 
-/** Officer sign-in (pen `UTLPY`). Demo account from `demo.meta.officerAccount`; real auth is the backend's. */
+/** Officer sign-in (pen `UTLPY`). Authenticates against the backend `/officer/auth/*`. */
 export function OfficerLoginScreen() {
   const { m } = useI18n()
   const copy = m.officer.login
   const router = useRouter()
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
+  const [pending, setPending] = useState(false)
   const titleId = useId()
+
+  async function signIn(call: () => Promise<LoginResponse>) {
+    setPending(true)
+    try {
+      saveOfficerSession(await call())
+      router.push("/petugas/antrean")
+    } catch (e) {
+      const status = e instanceof ApiError ? e.status : 0
+      const code = e instanceof ApiError ? e.code : null
+      if (code === "shortcut_unavailable") toast(copy.demoUnavailable)
+      else if (status === 401 || status === 422) {
+        setErrors({ password: copy.wrongCredentials })
+        setPassword("")
+      } else if (status === 403) setErrors({ password: copy.notOfficer })
+      else toast.error(copy.unavailable)
+    } finally {
+      setPending(false)
+    }
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    const trimmed = email.trim()
+    const trimmed = username.trim()
     if (!trimmed || !password) {
       setErrors({
-        email: trimmed ? undefined : m.common.required,
+        username: trimmed ? undefined : m.common.required,
         password: password ? undefined : m.common.required,
       })
       return
     }
-    const account = demo.meta.officerAccount
-    if (trimmed.toLowerCase() === account.email && password === account.password) {
-      router.push("/petugas/antrean")
-      return
-    }
-    setErrors({ password: copy.wrongCredentials })
-    setPassword("")
+    void signIn(() => officerLogin(trimmed, password))
   }
 
   return (
@@ -67,16 +82,17 @@ export function OfficerLoginScreen() {
           </div>
           <div className="flex flex-col gap-3">
             <LabeledInput
-              label={copy.emailLabel}
-              type="email"
-              inputMode="email"
+              label={copy.usernameLabel}
+              type="text"
               autoComplete="username"
-              placeholder={copy.emailPlaceholder}
-              value={email}
-              error={errors.email}
+              autoCapitalize="none"
+              spellCheck={false}
+              placeholder={copy.usernamePlaceholder}
+              value={username}
+              error={errors.username}
               onChange={(e) => {
-                setEmail(e.target.value)
-                if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }))
+                setUsername(e.target.value)
+                if (errors.username) setErrors((prev) => ({ ...prev, username: undefined }))
               }}
             />
             <LabeledInput
@@ -116,9 +132,21 @@ export function OfficerLoginScreen() {
               </button>
             </div>
           </div>
-          <Button type="submit" className="w-full">
-            {copy.submit}
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" disabled={pending} aria-busy={pending}>
+              {copy.submit}
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full"
+              disabled={pending}
+              aria-busy={pending}
+              onClick={() => void signIn(officerShortcut)}
+            >
+              {copy.demo}
+            </Button>
+          </div>
           <p className="text-sm/[21px] text-muted-foreground">{copy.help}</p>
         </form>
       </div>
