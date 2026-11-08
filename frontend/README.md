@@ -2,7 +2,7 @@
 
 Next.js app for RAKSA: citizens report animal bites (voice, text, or short form), get first-aid guidance and an urgency result, and officers review cases. UI copy is Indonesian with an English toggle.
 
-Stack: Next.js 16 (App Router), React 19, Tailwind CSS v4, shadcn/Radix UI, lucide-react icons, motion, Leaflet maps, Roboto via `next/font`.
+Stack: Next.js 16 (App Router), React 19, Tailwind CSS v4, shadcn/Radix UI, lucide-react icons, motion, Leaflet maps, Urbanist via `next/font`.
 
 > This Next.js version has breaking changes from older releases. Check `node_modules/next/dist/docs/` before using Next APIs (see `AGENTS.md`).
 
