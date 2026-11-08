@@ -1,0 +1,71 @@
+export const vaccineCardId = {
+  camera: {
+    pill: "Foto kartu vaksin",
+    guide: "Pakai tempat terang dan hindari pantulan cahaya.",
+    title: "Arahkan ke kartu vaksin",
+    sub: "Pastikan tanggal dan jenis vaksin terlihat jelas.",
+    blurryGuide: "Foto belum terbaca. Coba lagi di tempat terang, atau isi manual.",
+    blurryTitle: "Foto belum terbaca",
+    blurrySub: "Tahan kamera tetap diam, lalu foto ulang.",
+    processing: "Membaca kartu…",
+    gallery: "Galeri",
+    manual: "Isi manual",
+    shutter: "Ambil foto",
+    flashOn: "Nyalakan lampu kilat",
+    flashOff: "Matikan lampu kilat",
+    denied: "Kamera tidak diizinkan. Pilih foto dari Galeri.",
+  },
+  result: {
+    title: "Kartu vaksin hewan",
+    photographedAt: "Difoto {time}",
+    manualSub: "Isi sesuai kartu aslinya",
+    findings: "Hasil baca kartu",
+    manualHint: "Isi manual",
+    unclear: "Tidak jelas",
+    fields: {
+      vaccineDate: "Tanggal vaksin",
+      vaccineType: "Jenis vaksin",
+      vaccineOfficer: "Nama petugas",
+    },
+    disclaimer:
+      "Cocokkan dengan kartu aslinya. Hewan yang sudah divaksin tetap perlu dipantau, dan Anda tetap perlu diperiksa.",
+    use: "Pakai data ini",
+    retake: "Foto ulang",
+  },
+}
+
+export const vaccineCardEn: typeof vaccineCardId = {
+  camera: {
+    pill: "Photo of vaccine card",
+    guide: "Use a bright place and avoid glare.",
+    title: "Point at the vaccine card",
+    sub: "Make sure the date and vaccine type are clearly visible.",
+    blurryGuide: "The photo could not be read. Try again in a bright place, or fill in manually.",
+    blurryTitle: "Photo not readable",
+    blurrySub: "Hold the camera still, then take the photo again.",
+    processing: "Reading the card…",
+    gallery: "Gallery",
+    manual: "Fill in manually",
+    shutter: "Take photo",
+    flashOn: "Turn on flash",
+    flashOff: "Turn off flash",
+    denied: "Camera not allowed. Choose a photo from Gallery.",
+  },
+  result: {
+    title: "Animal vaccine card",
+    photographedAt: "Photographed {time}",
+    manualSub: "Fill in from the original card",
+    findings: "Card reading result",
+    manualHint: "Manual entry",
+    unclear: "Unclear",
+    fields: {
+      vaccineDate: "Vaccine date",
+      vaccineType: "Vaccine type",
+      vaccineOfficer: "Officer name",
+    },
+    disclaimer:
+      "Check it against the original card. A vaccinated animal still needs to be observed, and you still need to be examined.",
+    use: "Use this data",
+    retake: "Take photo again",
+  },
+}

@@ -1,0 +1,38 @@
+export const ownerId = {
+  context: "Laporan hewan",
+  inactive: "Tautan ini belum aktif. Hubungi petugas Rabies Center.",
+  summaryTitle: "Hewan yang diamati",
+  species: "Jenis",
+  desa: "Desa",
+  bittenDate: "Tanggal gigitan",
+  day: "Hari ke-{day} dari {total}",
+  question: "Bagaimana keadaan hewan hari ini?",
+  status: { sehat: "Sehat", sakit: "Sakit", mati: "Mati", hilang: "Hilang" },
+  submit: "Kirim laporan hari ke-{day}",
+  savedTitle: "Terima kasih. Laporan hari ke-{day} tersimpan.",
+  savedNext: "Laporan berikutnya: besok, {date}. Buka lagi tautan yang sama.",
+  sentTitle: "Terima kasih. Petugas dan korban sudah diberi tahu.",
+  sentAlert:
+    "Petugas Rabies Center akan menindaklanjuti laporan ini. Tetap buka tautan ini untuk kabar berikutnya.",
+  sent: "Terkirim",
+  done: "Selesai",
+}
+
+export const ownerEn: typeof ownerId = {
+  context: "Animal report",
+  inactive: "This link is not active yet. Contact the Rabies Center officer.",
+  summaryTitle: "Animal under observation",
+  species: "Type",
+  desa: "Village",
+  bittenDate: "Bite date",
+  day: "Day {day} of {total}",
+  question: "How is the animal today?",
+  status: { sehat: "Healthy", sakit: "Sick", mati: "Dead", hilang: "Missing" },
+  submit: "Send day {day} report",
+  savedTitle: "Thank you. Day {day} report saved.",
+  savedNext: "Next report: tomorrow, {date}. Open the same link again.",
+  sentTitle: "Thank you. The officer and the victim have been notified.",
+  sentAlert: "The Rabies Center officer will follow up on this report. Keep this link open for updates.",
+  sent: "Sent",
+  done: "Done",
+}

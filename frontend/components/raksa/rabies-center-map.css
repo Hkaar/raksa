@@ -1,0 +1,221 @@
+/* RabiesCenterMap (Leaflet) themed with the RAKSA tokens. Loaded only with the client-side map chunk. */
+
+.raksa-map.leaflet-container {
+  background: var(--muted);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.raksa-map.leaflet-container:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: -3px;
+}
+
+/* Calm, low-saturation tiles; dark mode inverts them instead of the light raster. */
+.raksa-map .leaflet-tile-pane {
+  filter: saturate(0.75);
+}
+
+.dark .raksa-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) saturate(0.5) brightness(0.85) contrast(0.9);
+}
+
+/* Markers: Leaflet anchors a 0×0 box on the coordinate; the content centers itself on it. */
+.raksa-map .raksa-pin-anchor {
+  background: none;
+  border: 0;
+}
+
+.raksa-map .raksa-pin-anchor:focus-visible {
+  outline: none;
+}
+
+.raksa-pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px 5px 7px;
+  border-radius: 9999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  outline: 2px solid var(--card);
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  animation: raksa-pin-in 220ms var(--ease-raksa) both;
+}
+
+.raksa-pin svg {
+  flex-shrink: 0;
+}
+
+.raksa-map .raksa-pin-anchor:focus-visible .raksa-pin {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.raksa-user {
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: raksa-fade-in 220ms var(--ease-raksa) both;
+}
+
+.raksa-user-halo,
+.raksa-user-dot {
+  position: absolute;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+}
+
+.raksa-user-halo {
+  width: 48px;
+  height: 48px;
+  background: color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
+.raksa-user-dot {
+  width: 16px;
+  height: 16px;
+  background: var(--foreground);
+  outline: 3px solid var(--card);
+}
+
+@keyframes raksa-pin-in {
+  from {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes raksa-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raksa-pin {
+    animation-name: raksa-fade-in;
+    animation-duration: 120ms;
+    animation-delay: 0ms !important;
+  }
+
+  .raksa-user {
+    animation-duration: 120ms;
+  }
+}
+
+/* Zoom control: hidden on phones (pinch to zoom), 48px themed buttons from tablet up. */
+.raksa-map .leaflet-bar {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.raksa-map .leaflet-bar a,
+.raksa-map .leaflet-bar a:hover {
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  font-size: 22px;
+  background: var(--card);
+  color: var(--foreground);
+  border-bottom-color: var(--border);
+  transition: background-color 160ms var(--ease-raksa);
+}
+
+.raksa-map .leaflet-bar a:hover {
+  background: var(--muted);
+}
+
+.raksa-map .leaflet-bar a:first-child,
+.raksa-map .leaflet-bar a:last-child {
+  border-radius: 0;
+}
+
+.raksa-map .leaflet-bar a:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: -3px;
+}
+
+.raksa-map .leaflet-bar a.leaflet-disabled {
+  color: var(--muted-foreground);
+  opacity: 0.5;
+}
+
+@media (max-width: 767px) {
+  .raksa-map .leaflet-control-zoom {
+    display: none;
+  }
+}
+
+.raksa-map .leaflet-control-attribution {
+  background: color-mix(in oklab, var(--card) 85%, transparent);
+  color: var(--muted-foreground);
+  font-size: 10px;
+  line-height: 16px;
+  border-top-left-radius: 4px;
+}
+
+.raksa-map .leaflet-control-attribution a {
+  color: inherit;
+}
+
+/* Popup */
+.raksa-map .leaflet-popup-content-wrapper {
+  background: var(--card);
+  color: var(--foreground);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px -12px var(--shadow-float);
+}
+
+.raksa-map .leaflet-popup-tip {
+  background: var(--card);
+  box-shadow: none;
+}
+
+.raksa-map .leaflet-popup-content {
+  margin: 14px 16px 16px;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.raksa-map .leaflet-popup-content p {
+  margin: 0;
+}
+
+.raksa-map .leaflet-popup-content a.raksa-popup-route {
+  color: var(--primary);
+}
+
+.raksa-map a.leaflet-popup-close-button {
+  top: 4px;
+  right: 4px;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  line-height: 40px;
+  color: var(--muted-foreground);
+  border-radius: 9999px;
+}
+
+.raksa-map a.leaflet-popup-close-button:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}

@@ -1,0 +1,652 @@
+{
+  "meta": {
+    "now": "2026-11-06T07:41:00+08:00",
+    "officerAccount": { "email": "petugas@dinkes.go.id", "password": "raksa2026" },
+    "siteUrl": "https://raksa.example"
+  },
+  "kecamatan": [
+    "denpasar_barat",
+    "denpasar_selatan",
+    "denpasar_timur",
+    "denpasar_utara"
+  ],
+  "rabiesCenters": [
+    {
+      "id": "rc1",
+      "name": "Rabies Center 1",
+      "address": "Jl. Contoh No. 1",
+      "hours": "08.00–14.00",
+      "phone": "+62361000001",
+      "lat": -8.6724,
+      "lng": 115.2075,
+      "kecamatan": "denpasar_barat"
+    },
+    {
+      "id": "rc2",
+      "name": "Rabies Center 2",
+      "address": "Jl. Contoh No. 2",
+      "hours": "08.00–14.00",
+      "phone": "+62361000002",
+      "lat": -8.6372,
+      "lng": 115.2045,
+      "kecamatan": "denpasar_utara"
+    },
+    {
+      "id": "rc3",
+      "name": "Rabies Center 3",
+      "address": "Jl. Contoh No. 3",
+      "hours": "08.00–14.00",
+      "phone": "+62361000003",
+      "lat": -8.6975,
+      "lng": 115.2285,
+      "kecamatan": "denpasar_selatan"
+    }
+  ],
+  "userLocation": {
+    "lat": -8.6617,
+    "lng": 115.209
+  },
+  "cases": [
+    {
+      "code": "D90P",
+      "active": true,
+      "isDemo": true,
+      "urgency": "HARI_INI",
+      "woundCategory": "III",
+      "animalRisk": "tinggi",
+      "desa": "Padangsambian",
+      "kecamatan": "denpasar_barat",
+      "bittenAt": "2026-10-31T07:00:00+08:00",
+      "reportedAt": "2026-10-31T07:11:00+08:00",
+      "wound": {
+        "contact": "gigitan",
+        "bleeding": "ya",
+        "bodyPart": "kaki",
+        "count": "1"
+      },
+      "animal": {
+        "species": "anjing",
+        "ownership": "tanpa_pemilik",
+        "behavior": "tidak_tahu",
+        "condition": "tampak_sakit",
+        "animalNow": "diamankan_petugas",
+        "vaccineStatus": "tidak_jelas",
+        "vaccinatedAt": null
+      },
+      "victim": {
+        "ageGroup": "dewasa",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [
+          "luka_berdarah",
+          "gigitan_kaki",
+          "hewan_tanpa_pemilik",
+          "hewan_tampak_sakit"
+        ],
+        "rules": [
+          {
+            "condition": "luka_berdarah_gigitan",
+            "outcome": "kategori_III"
+          },
+          {
+            "condition": "hewan_tanpa_pemilik",
+            "outcome": "risiko_naik"
+          },
+          {
+            "condition": "hewan_sakit_menyerang",
+            "outcome": "risiko_tinggi"
+          },
+          {
+            "condition": "kategori_III_risiko_tinggi",
+            "outcome": "HARI_INI"
+          }
+        ]
+      },
+      "observationRequired": true,
+      "observation": {
+        "durationDays": 14,
+        "startedAt": "2026-10-31T13:00:00+08:00",
+        "reports": [
+          {
+            "at": "2026-11-01T08:00:00+08:00",
+            "status": "sehat"
+          },
+          {
+            "at": "2026-11-03T08:00:00+08:00",
+            "status": "sehat"
+          },
+          {
+            "at": "2026-11-05T08:00:00+08:00",
+            "status": "sakit"
+          }
+        ]
+      },
+      "ownerToken": "D90PZ8",
+      "relatedCases": []
+    },
+    {
+      "code": "B21K",
+      "active": true,
+      "isDemo": true,
+      "urgency": "HARI_INI",
+      "woundCategory": "III",
+      "animalRisk": "tinggi",
+      "desa": "Pemecutan Kaja",
+      "kecamatan": "denpasar_utara",
+      "bittenAt": "2026-11-02T07:00:00+08:00",
+      "reportedAt": "2026-11-02T07:11:00+08:00",
+      "wound": {
+        "contact": "gigitan",
+        "bleeding": "ya",
+        "bodyPart": "tangan",
+        "count": "1"
+      },
+      "animal": {
+        "species": "anjing",
+        "ownership": "berpemilik",
+        "behavior": "tidak_tahu",
+        "condition": "tampak_sehat",
+        "animalNow": "di_rumah_pemilik",
+        "vaccineStatus": "belum",
+        "vaccinatedAt": null
+      },
+      "victim": {
+        "ageGroup": "dewasa",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [
+          "luka_berdarah",
+          "gigitan_tangan",
+          "hewan_berpemilik",
+          "hewan_belum_vaksin"
+        ],
+        "rules": [
+          {
+            "condition": "luka_berdarah_gigitan",
+            "outcome": "kategori_III"
+          },
+          {
+            "condition": "hewan_berpemilik_belum_vaksin",
+            "outcome": "risiko_naik"
+          },
+          {
+            "condition": "kategori_III_risiko_tinggi",
+            "outcome": "HARI_INI"
+          }
+        ]
+      },
+      "observationRequired": true,
+      "observation": {
+        "durationDays": 14,
+        "startedAt": "2026-11-02T13:20:00+08:00",
+        "reports": [
+          {
+            "at": "2026-11-03T08:10:00+08:00",
+            "status": "sehat"
+          },
+          {
+            "at": "2026-11-05T08:10:00+08:00",
+            "status": "sehat"
+          },
+          {
+            "at": "2026-11-06T07:10:00+08:00",
+            "status": "sakit"
+          }
+        ]
+      },
+      "ownerToken": "B21KW5",
+      "relatedCases": []
+    },
+    {
+      "code": "A7F3",
+      "active": true,
+      "isDemo": true,
+      "urgency": "HARI_INI",
+      "woundCategory": "III",
+      "animalRisk": "tinggi",
+      "desa": "Dauh Puri",
+      "kecamatan": "denpasar_barat",
+      "bittenAt": "2026-11-06T07:30:00+08:00",
+      "reportedAt": "2026-11-06T07:41:00+08:00",
+      "wound": {
+        "contact": "gigitan",
+        "bleeding": "ya",
+        "bodyPart": "jari_tangan",
+        "count": "1"
+      },
+      "animal": {
+        "species": "anjing",
+        "ownership": "tanpa_pemilik",
+        "behavior": "menyerang_tanpa_diganggu",
+        "condition": "tampak_sakit",
+        "animalNow": "diamankan_petugas",
+        "vaccineStatus": "tidak_jelas",
+        "vaccinatedAt": null
+      },
+      "victim": {
+        "ageGroup": "anak",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [
+          "luka_berdarah",
+          "gigitan_jari_tangan",
+          "hewan_tanpa_pemilik",
+          "hewan_tampak_sakit"
+        ],
+        "rules": [
+          {
+            "condition": "luka_berdarah_gigitan",
+            "outcome": "kategori_III"
+          },
+          {
+            "condition": "hewan_tanpa_pemilik",
+            "outcome": "risiko_naik"
+          },
+          {
+            "condition": "hewan_sakit_menyerang",
+            "outcome": "risiko_tinggi"
+          },
+          {
+            "condition": "kategori_III_risiko_tinggi",
+            "outcome": "HARI_INI"
+          }
+        ]
+      },
+      "observationRequired": true,
+      "observation": null,
+      "ownerToken": "7KQ2M4",
+      "relatedCases": [
+        "E4M8",
+        "H3T7"
+      ]
+    },
+    {
+      "code": "E4M8",
+      "active": true,
+      "isDemo": true,
+      "urgency": "HARI_INI",
+      "woundCategory": "III",
+      "animalRisk": "sedang",
+      "desa": "Dauh Puri",
+      "kecamatan": "denpasar_barat",
+      "bittenAt": "2026-11-06T05:41:00+08:00",
+      "reportedAt": "2026-11-06T05:52:00+08:00",
+      "wound": {
+        "contact": "gigitan",
+        "bleeding": "ya",
+        "bodyPart": "kaki",
+        "count": "1"
+      },
+      "animal": {
+        "species": "anjing",
+        "ownership": "tanpa_pemilik",
+        "behavior": "menyerang_tanpa_diganggu",
+        "condition": "tampak_sakit",
+        "animalNow": "diamankan_petugas",
+        "vaccineStatus": "tidak_jelas",
+        "vaccinatedAt": null
+      },
+      "victim": {
+        "ageGroup": "dewasa",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [
+          "luka_berdarah",
+          "gigitan_kaki",
+          "hewan_tanpa_pemilik",
+          "hewan_tampak_sakit"
+        ],
+        "rules": [
+          {
+            "condition": "luka_berdarah_gigitan",
+            "outcome": "kategori_III"
+          },
+          {
+            "condition": "kategori_III",
+            "outcome": "HARI_INI"
+          }
+        ]
+      },
+      "observationRequired": true,
+      "observation": null,
+      "ownerToken": "E4M8KQ",
+      "relatedCases": [
+        "A7F3",
+        "H3T7"
+      ]
+    },
+    {
+      "code": "F6Q2",
+      "active": true,
+      "isDemo": true,
+      "urgency": "DALAM_24_JAM",
+      "woundCategory": "II",
+      "animalRisk": "sedang",
+      "desa": "Tegal Kertha",
+      "kecamatan": "denpasar_barat",
+      "bittenAt": "2026-11-05T07:00:00+08:00",
+      "reportedAt": "2026-11-05T07:11:00+08:00",
+      "wound": {
+        "contact": "cakaran",
+        "bleeding": "tidak",
+        "bodyPart": "tangan",
+        "count": "1"
+      },
+      "animal": {
+        "species": "kucing",
+        "ownership": "berpemilik",
+        "behavior": "tidak_tahu",
+        "condition": "tampak_sehat",
+        "animalNow": "di_rumah_pemilik",
+        "vaccineStatus": "belum",
+        "vaccinatedAt": null
+      },
+      "victim": {
+        "ageGroup": "dewasa",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [],
+        "rules": [
+          {
+            "condition": "cakaran_tanpa_darah",
+            "outcome": "kategori_II"
+          },
+          {
+            "condition": "hewan_berpemilik_belum_vaksin",
+            "outcome": "risiko_sedang"
+          },
+          {
+            "condition": "kategori_II_risiko_sedang",
+            "outcome": "DALAM_24_JAM"
+          }
+        ]
+      },
+      "observationRequired": true,
+      "observation": {
+        "durationDays": 10,
+        "startedAt": "2026-11-05T12:00:00+08:00",
+        "reports": []
+      },
+      "ownerToken": "9PL3TX",
+      "relatedCases": []
+    },
+    {
+      "code": "C2D9",
+      "active": true,
+      "isDemo": true,
+      "urgency": "DALAM_24_JAM",
+      "woundCategory": "II",
+      "animalRisk": "rendah",
+      "desa": "Dauh Puri",
+      "kecamatan": "denpasar_barat",
+      "bittenAt": "2026-11-06T07:30:00+08:00",
+      "reportedAt": "2026-11-06T07:41:00+08:00",
+      "wound": {
+        "contact": "cakaran",
+        "bleeding": "tidak",
+        "bodyPart": "tangan",
+        "count": "1"
+      },
+      "animal": {
+        "species": "anjing",
+        "ownership": "berpemilik",
+        "behavior": "tidak_tahu",
+        "condition": "tampak_sehat",
+        "animalNow": "di_rumah_pemilik",
+        "vaccineStatus": "divaksin",
+        "vaccinatedAt": "2026-07-06"
+      },
+      "victim": {
+        "ageGroup": "dewasa",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [],
+        "rules": [
+          {
+            "condition": "cakaran_tanpa_darah",
+            "outcome": "kategori_II"
+          },
+          {
+            "condition": "hewan_berpemilik_divaksin",
+            "outcome": "risiko_rendah"
+          },
+          {
+            "condition": "kategori_II_risiko_rendah",
+            "outcome": "DALAM_24_JAM"
+          }
+        ]
+      },
+      "observationRequired": true,
+      "observation": null,
+      "ownerToken": "C2D9M1",
+      "relatedCases": []
+    },
+    {
+      "code": "G1H5",
+      "active": true,
+      "isDemo": true,
+      "urgency": "DALAM_24_JAM",
+      "woundCategory": "I",
+      "animalRisk": "rendah",
+      "desa": "Pemecutan",
+      "kecamatan": "denpasar_barat",
+      "bittenAt": "2026-11-06T04:41:00+08:00",
+      "reportedAt": "2026-11-06T04:52:00+08:00",
+      "wound": {
+        "contact": "jilatan",
+        "bleeding": "tidak",
+        "bodyPart": "tangan",
+        "count": "1"
+      },
+      "animal": {
+        "species": "anjing",
+        "ownership": "berpemilik",
+        "behavior": "tidak_tahu",
+        "condition": "tampak_sehat",
+        "animalNow": "di_rumah_pemilik",
+        "vaccineStatus": "divaksin",
+        "vaccinatedAt": "2026-05-01"
+      },
+      "victim": {
+        "ageGroup": "dewasa",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [],
+        "rules": [
+          {
+            "condition": "jilatan_kulit_utuh",
+            "outcome": "kategori_I"
+          },
+          {
+            "condition": "kategori_I",
+            "outcome": "DALAM_24_JAM"
+          }
+        ]
+      },
+      "observationRequired": false,
+      "observation": null,
+      "ownerToken": "G1H5R2",
+      "relatedCases": []
+    },
+    {
+      "code": "H3T7",
+      "active": false,
+      "isDemo": true,
+      "urgency": "DALAM_24_JAM",
+      "woundCategory": "II",
+      "animalRisk": "sedang",
+      "desa": "Dauh Puri",
+      "kecamatan": "denpasar_barat",
+      "bittenAt": "2026-11-06T02:41:00+08:00",
+      "reportedAt": "2026-11-06T02:52:00+08:00",
+      "wound": {
+        "contact": "cakaran",
+        "bleeding": "tidak",
+        "bodyPart": "kaki",
+        "count": "1"
+      },
+      "animal": {
+        "species": "anjing",
+        "ownership": "tanpa_pemilik",
+        "behavior": "menyerang_tanpa_diganggu",
+        "condition": "tampak_sakit",
+        "animalNow": "diamankan_petugas",
+        "vaccineStatus": "tidak_jelas",
+        "vaccinatedAt": null
+      },
+      "victim": {
+        "ageGroup": "dewasa",
+        "accompanied": "sendirian"
+      },
+      "explanation": {
+        "reasons": [],
+        "rules": [
+          {
+            "condition": "cakaran_tanpa_darah",
+            "outcome": "kategori_II"
+          },
+          {
+            "condition": "hewan_tanpa_pemilik",
+            "outcome": "risiko_naik"
+          },
+          {
+            "condition": "kategori_II_risiko_sedang",
+            "outcome": "DALAM_24_JAM"
+          }
+        ]
+      },
+      "observationRequired": true,
+      "observation": null,
+      "ownerToken": "H3T7N4",
+      "relatedCases": [
+        "A7F3",
+        "E4M8"
+      ]
+    }
+  ],
+  "reportDemo": {
+    "resultCaseCode": "A7F3",
+    "storyTranscript": {
+      "id": "Tadi jam setengah delapan pagi anak saya digigit anjing liar di jari tangan, di Dauh Puri. Lukanya berdarah sedikit. Anjingnya kelihatan sakit, menyerang tanpa diganggu, lalu lari.",
+      "en": "At half past seven this morning a stray dog bit my child on the finger, in Dauh Puri. The wound bled a little. The dog looked sick, attacked without being provoked, then ran away."
+    },
+    "initialDraft": {
+      "bittenAt": "2026-11-06T07:30:00+08:00",
+      "kecamatan": "denpasar_barat",
+      "desa": "Dauh Puri",
+      "contact": "gigitan",
+      "bodyPart": "jari_tangan",
+      "bleeding": "ya",
+      "woundCount": "1",
+      "species": "anjing",
+      "ownership": "tanpa_pemilik",
+      "behavior": "menyerang_tanpa_diganggu",
+      "condition": "tampak_sakit",
+      "animalNow": "lari",
+      "vaccineStatus": "tidak_jelas",
+      "ageGroup": "anak",
+      "accompanied": "sendirian"
+    },
+    "followUpQuestions": [
+      "bleeding",
+      "ownership",
+      "condition",
+      "ageGroup"
+    ],
+    "formQuestions": [
+      "species",
+      "bleeding",
+      "contact",
+      "bodyPart",
+      "ownership",
+      "condition",
+      "vaccineStatus",
+      "ageGroup"
+    ],
+    "scanResult": {
+      "title": {
+        "id": "Gigitan di jari, berdarah",
+        "en": "Bite on the finger, bleeding"
+      },
+      "rows": [
+        {
+          "field": "bodyPart",
+          "value": {
+            "id": "Jari tangan",
+            "en": "Finger"
+          },
+          "flag": "area_berisiko"
+        },
+        {
+          "field": "contact",
+          "value": {
+            "id": "Gigitan, kulit tembus",
+            "en": "Bite, skin broken"
+          },
+          "flag": "perlu_perhatian"
+        },
+        {
+          "field": "bleeding",
+          "value": {
+            "id": "Ya, sedikit",
+            "en": "Yes, a little"
+          },
+          "flag": "perlu_perhatian"
+        },
+        {
+          "field": "woundCount",
+          "value": {
+            "id": "1 luka",
+            "en": "1 wound"
+          },
+          "flag": "tercatat"
+        },
+        {
+          "field": "woundSize",
+          "value": {
+            "id": "± 1 cm",
+            "en": "± 1 cm"
+          },
+          "flag": "perkiraan"
+        }
+      ]
+    },
+    "vaccineCard": {
+      "title": {
+        "id": "Kartu vaksin anjing",
+        "en": "Dog vaccine card"
+      },
+      "photographedAt": "2026-11-06T07:52:00+08:00",
+      "rows": [
+        {
+          "field": "vaccineDate",
+          "value": {
+            "id": "12 Juli 2026",
+            "en": "12 July 2026"
+          },
+          "status": "dibaca_ai"
+        },
+        {
+          "field": "vaccineType",
+          "value": {
+            "id": "Vaksin rabies hewan (inaktif)",
+            "en": "Animal rabies vaccine (inactivated)"
+          },
+          "status": "dibaca_ai"
+        },
+        {
+          "field": "vaccineOfficer",
+          "value": null,
+          "status": "tidak_jelas"
+        }
+      ]
+    }
+  }
+}
