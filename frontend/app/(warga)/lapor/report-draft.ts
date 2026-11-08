@@ -4,6 +4,10 @@ import { useSyncExternalStore } from "react"
 import { demo } from "@/lib/demo-data"
 import type { ReportDraftFields, ScanOutcome, ScanRow, VaccineRow } from "@/lib/types"
 
+/**
+ * Citizen report in progress, shared by every `/lapor/*` screen. Fields persist in sessionStorage (survive
+ * reloads, not tab close); recorded media stay in memory only. Unanswered fields start from the demo draft.
+ */
 export type ReportDraft = ReportDraftFields & {
   story: string
   scanRows: ScanRow[]
@@ -44,6 +48,7 @@ function subscribe(listener: () => void) {
   }
 }
 
+/** Current draft. Returns the same object until storage changes, as `useSyncExternalStore` requires. */
 export function getDraft(): ReportDraft {
   const raw = window.sessionStorage.getItem(STORAGE_KEY)
   if (raw !== cachedRaw) {
@@ -57,6 +62,7 @@ export function getDraft(): ReportDraft {
   return cachedDraft
 }
 
+/** Shallow-merges `patch` into the draft and notifies subscribers. */
 export function updateDraft(patch: Partial<ReportDraft>) {
   window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ...getDraft(), ...patch }))
   emit()
@@ -71,6 +77,7 @@ export function setDraftMedia(kind: keyof DraftMedia, blob: Blob | null) {
   emit()
 }
 
+/** Raw blob for uploads (e.g. wound video to `/scans/wound`); undefined after a reload. */
 export function getDraftBlob(kind: keyof DraftMedia): Blob | undefined {
   return blobs[kind]
 }

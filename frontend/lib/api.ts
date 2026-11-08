@@ -1,5 +1,13 @@
+/**
+ * Client for the RAKSA FastAPI backend (`backend/`). Every call goes to `${NEXT_PUBLIC_RAKSA_API_URL}/api/v1`.
+ * Failures throw `ApiError`; successful AI calls may still return `mode: "manual"` (see the response types).
+ */
 const API_URL = `${(process.env.NEXT_PUBLIC_RAKSA_API_URL ?? "http://127.0.0.1:8000").replace(/\/+$/, "")}/api/v1`
 
+/**
+ * Non-2xx response or network failure. `status` 0 means the backend was unreachable (`code: "network_error"`).
+ * `code` is the backend's `detail` (string) or `detail.code`, e.g. `invalid_credentials`, `persistence_not_configured`.
+ */
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -20,6 +28,11 @@ export type LoginResponse = {
   officer: Officer
 }
 
+/**
+ * AI endpoints (transcribe / extract / scan) never fail just because the AI is down: they answer 200 with
+ * `mode: "manual"`, `null` content and a `reason`, and the UI falls back to manual input. `needs_confirmation`
+ * is always true: results are suggestions the user must confirm, never diagnoses.
+ */
 export type StorySuggestion = {
   time_text: string | null
   place_text: string | null
@@ -66,6 +79,7 @@ export type WoundScanResponse = {
   reason: "ai_unavailable" | "video_unclear" | null
 }
 
+/** Body of `POST /cases`; built from the report draft by `draftToCaseCreate` in `lapor/submit-report.ts`. */
 export type CaseCreate = {
   story: string
   occurred_at: string | null
@@ -123,9 +137,11 @@ export const officerLogin = (identifier: string, password: string) =>
     identifier.includes("@") ? { email: identifier, password } : { username: identifier, password },
   )
 
+/** "Masuk sebagai demo": signs in with server-held demo credentials; 503 `shortcut_unavailable` when disabled. */
 export const officerShortcut = () =>
   request<LoginResponse>("/officer/auth/shortcut", { method: "POST" })
 
+/** Validates the token and officer role; 401 when expired/invalid, 403 when the account is not an officer. */
 export const officerMe = (accessToken: string) =>
   request<Officer>("/officer/auth/me", { method: "GET", headers: bearer(accessToken) })
 
@@ -135,6 +151,7 @@ export const officerRefresh = (refreshToken: string) =>
 export const officerLogout = (accessToken: string) =>
   request<void>("/officer/auth/logout", { method: "POST", headers: bearer(accessToken) })
 
+/** Raw audio body (not multipart); the backend caps it at 8 MB. Call only after AI consent (`lib/ai-consent.ts`). */
 export const transcribeStory = (audio: Blob) =>
   request<TranscriptionResponse>("/stories/transcribe", {
     method: "POST",
@@ -145,6 +162,7 @@ export const transcribeStory = (audio: Blob) =>
 export const extractStory = (story: string) =>
   postJson<ExtractionResponse>("/stories/extract", { story })
 
+/** Raw mp4/webm body (not multipart); the backend caps it at 12 MB. Call only after AI consent (`lib/ai-consent.ts`). */
 export const scanWound = (video: Blob) =>
   request<WoundScanResponse>("/scans/wound", {
     method: "POST",
@@ -152,4 +170,8 @@ export const scanWound = (video: Blob) =>
     body: video,
   })
 
+/**
+ * Saves a confirmed report (201). The created case in the response is ignored for now: the result screen
+ * still shows demo data because there is no read endpoint. 503 `persistence_not_configured` = saving disabled.
+ */
 export const createCase = (body: CaseCreate) => postJson<void>("/cases", body)

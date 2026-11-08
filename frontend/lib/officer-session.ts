@@ -1,5 +1,9 @@
 "use client"
 
+/**
+ * Officer tokens from the backend, kept in sessionStorage: scoped to the tab, gone when it closes.
+ * Pages read it through `OfficerGuard`, which calls `verifyOfficerSession` on mount.
+ */
 import { ApiError, officerLogout, officerMe, officerRefresh, type LoginResponse, type Officer } from "@/lib/api"
 
 const KEY = "raksa-officer-session"
@@ -16,6 +20,7 @@ export function getOfficerSession(): OfficerSession | null {
   }
 }
 
+/** `expiresAt` is a local epoch-ms estimate; the backend's `/me` check stays authoritative. */
 export function saveOfficerSession(r: LoginResponse): void {
   const session: OfficerSession = {
     accessToken: r.access_token,
@@ -50,6 +55,7 @@ export async function verifyOfficerSession(): Promise<boolean> {
   }
 }
 
+/** Clears the local session first, then revokes it server-side best-effort (errors ignored). */
 export async function signOutOfficer(): Promise<void> {
   const token = getOfficerSession()?.accessToken
   clearOfficerSession()

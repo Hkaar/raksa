@@ -1,3 +1,4 @@
+/** `denied` = user or browser policy refused access; `unavailable` = no device/API (e.g. insecure origin). */
 export type MediaResult = { stream: MediaStream } | { error: "denied" | "unavailable" }
 
 async function request(constraints: MediaStreamConstraints): Promise<MediaResult> {
@@ -28,6 +29,7 @@ export function createRecorder(stream: MediaStream) {
   return new MediaRecorder(stream, mimeType ? { mimeType } : undefined)
 }
 
+/** Releases the camera/mic (turns off the device indicator). Safe on null. */
 export function stopStream(stream: MediaStream | null | undefined) {
   stream?.getTracks().forEach((track) => track.stop())
 }
