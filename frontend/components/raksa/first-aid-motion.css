@@ -1,11 +1,10 @@
 /*
- * First-aid action motion (pen shaders `tap-water.glsl` on `g1Jtq`, `scene-bubbles.glsl` on `eweok`),
- * rebuilt as SVG + CSS. Reduced motion: water shows as still solid streams; drops and bubbles hide.
+ * First-aid action motion (Scene/Bilas water, pen shader `scene-bubbles.glsl` on `eweok` for Scene/Sabun),
+ * rebuilt as SVG + CSS. Reduced motion: the scenes stay as drawn (drops still, highlights still); bubbles hide.
  */
 
-.raksa-water-stream {
-  stroke-dasharray: 7 4;
-  animation: raksa-water-flow 0.6s linear infinite;
+.raksa-water-streak {
+  animation: raksa-water-streak 0.6s linear var(--streak-delay, 0s) infinite;
 }
 
 .raksa-water-drop {
@@ -24,12 +23,18 @@
   animation: raksa-bubble-sway 2.8s ease-in-out var(--bubble-delay, 0s) infinite alternate;
 }
 
-@keyframes raksa-water-flow {
-  from {
-    stroke-dashoffset: 11;
+@keyframes raksa-water-streak {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
   }
-  to {
-    stroke-dashoffset: 0;
+  30%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(4px);
   }
 }
 
@@ -75,11 +80,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .raksa-water-stream {
-    stroke-dasharray: none;
+  .raksa-water-streak,
+  .raksa-water-drop {
+    opacity: 1;
     animation: none !important;
   }
-  .raksa-water-drop,
   .raksa-bubble-rise,
   .raksa-bubble-sway {
     animation: none !important;

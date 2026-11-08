@@ -16,24 +16,8 @@ export const firstAidId = {
     cta: "Lanjut lapor",
     toast: "15 menit selesai. Lanjut lapor.",
   },
-  /** Scene card steps (pens `BIUma`/`E8Ofxp`): soap 15:00–14:00, rinse 14:00–00:00, antiseptic at 00:00. */
-  steps: [
-    {
-      title: "Sabuni luka dan sekitarnya",
-      window: "15:00 – 14:00",
-      next: "Berikutnya: bilas di air mengalir, mulai 14:00.",
-    },
-    {
-      title: "Bilas di bawah air mengalir",
-      window: "14:00 – 00:00",
-      next: "Berikutnya: antiseptik di 00:00, lalu Rabies Center.",
-    },
-    {
-      title: "Oleskan antiseptik",
-      window: "00:00",
-      next: "Berikutnya: ke Rabies Center hari ini, meski luka kecil.",
-    },
-  ],
+  /** Scene captions (pens `BIUma`/`E8Ofxp`): soap 15:00–14:00, rinse 14:00–00:00, antiseptic at 00:00. */
+  steps: ["Sabuni luka dan sekitarnya", "Bilas di bawah air mengalir", "Oleskan antiseptik"],
 }
 
 export const firstAidEn: typeof firstAidId = {
@@ -54,21 +38,5 @@ export const firstAidEn: typeof firstAidId = {
     cta: "Continue to report",
     toast: "15 minutes done. Continue to report.",
   },
-  steps: [
-    {
-      title: "Lather the wound and around it",
-      window: "15:00 – 14:00",
-      next: "Next: rinse under running water from 14:00.",
-    },
-    {
-      title: "Rinse under running water",
-      window: "14:00 – 00:00",
-      next: "Next: antiseptic at 00:00, then a Rabies Center.",
-    },
-    {
-      title: "Apply antiseptic",
-      window: "00:00",
-      next: "Next: go to a Rabies Center today, even if the wound is small.",
-    },
-  ],
+  steps: ["Lather the wound and around it", "Rinse under running water", "Apply antiseptic"],
 }
