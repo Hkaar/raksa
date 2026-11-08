@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 from app.services.officer_auth import AuthUnavailable, InvalidCredentials, officer_user, request_auth
 
@@ -16,8 +16,15 @@ Username = Annotated[str, StringConstraints(strip_whitespace=True, to_lower=True
 
 class LoginInput(BaseModel):
     model_config = ConfigDict(extra='forbid')
-    username: Username
+    username: Username | None = None
+    email: Annotated[str, StringConstraints(strip_whitespace=True, min_length=3, max_length=254, pattern=r'^[^\s@]+@[^\s@]+\.[^\s@]+$')] | None = None
     password: str = Field(min_length=1, max_length=256, repr=False)
+
+    @model_validator(mode='after')
+    def one_identifier(self):
+        if (self.username is None) == (self.email is None):
+            raise ValueError('Provide exactly one of username or email')
+        return self
 
 
 class RefreshInput(BaseModel):
@@ -60,10 +67,11 @@ def validate_officer(user):
 async def login(body: LoginInput, request: Request, response: Response):
     response.headers['Cache-Control'] = 'no-store'
     settings = request.app.state.settings
-    if not settings.officer_email_domain:
+    if body.username is not None and not settings.officer_email_domain:
         raise HTTPException(status_code=503, detail='auth_unavailable')
+    email = body.email or f'{body.username}@{settings.officer_email_domain}'
     result = await call_auth(settings, 'token?grant_type=password',
-        {'email': f'{body.username}@{settings.officer_email_domain}', 'password': body.password})
+        {'email': email, 'password': body.password})
     return session_response(result)
 
 

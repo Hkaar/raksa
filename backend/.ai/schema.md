@@ -11,3 +11,5 @@ Rujukan rincian kolom, tipe, constraint, ERD, SQL, dan seed: [`docs/database-erd
 ## Tambahan: profil petugas
 
 Rancangan `public.officers` dan SQL terpisah: [`docs/officers.sql`](../docs/officers.sql). `id` adalah PK sekaligus FK ke `auth.users.id` (on delete cascade); `full_name` wajib, `organization` dan `phone` opsional, `created_at` otomatis. RLS mengizinkan akun terautentikasi membaca profil sendiri; perubahan melalui service role/server tepercaya. SQL belum diterapkan. Tabel tidak menyimpan password dan belum dipakai oleh endpoint login.
+
+Verifikasi terbaru: OpenAPI database live menampilkan kolom cases dan observations yang cocok. Endpoint POST kini menyimpan lewat secret server; RLS dan grants tidak diubah. Sampel sintetis berhasil dibuat dan dihapus kembali.

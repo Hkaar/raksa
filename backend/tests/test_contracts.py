@@ -4,6 +4,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
+from app.config import Settings
+from app.api.officer_auth import me
 from app.schemas import CaseCreate
 
 
@@ -16,7 +18,7 @@ def test_unknown_bleeding_and_optional_media():
 
 
 def test_case_write_reports_unavailable_instead_of_fake_success():
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(Settings(_env_file=None))) as client:
         response = client.post('/api/v1/cases', json={'story': 'Digigit anjing'})
     assert response.status_code == 503
     assert response.json()['detail']['code'] == 'persistence_not_configured'
@@ -31,13 +33,13 @@ def test_case_write_reports_unavailable_instead_of_fake_success():
     {'story': 'x', 'urgency': 'low'},
 ])
 def test_invalid_case_is_rejected(payload):
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(Settings(_env_file=None))) as client:
         response = client.post('/api/v1/cases', json=payload)
     assert response.status_code == 422
 
 
 def test_validation_errors_omit_sensitive_input():
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(Settings(_env_file=None))) as client:
         response = client.post('/api/v1/cases', json={'story': 'sensitive patient story', 'unexpected': 'private'})
     assert response.status_code == 422
     assert 'sensitive patient story' not in response.text
@@ -45,7 +47,9 @@ def test_validation_errors_omit_sensitive_input():
 
 
 def test_observation_validates_case_id_and_aware_time():
-    with TestClient(create_app()) as client:
+    application = create_app(Settings(_env_file=None))
+    application.dependency_overrides[me] = lambda: {'id': 'test', 'role': 'officer'}
+    with TestClient(application) as client:
         payload = {'notes': 'Hewan masih terlihat', 'observed_at': '2026-11-06T10:00:00+08:00'}
         assert client.post('/api/v1/cases/invalid/observations', json=payload).status_code == 422
         response = client.post(f'/api/v1/cases/{uuid4()}/observations', json=payload)
@@ -55,7 +59,7 @@ def test_observation_validates_case_id_and_aware_time():
 
 
 def test_contracts_appear_in_openapi():
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(Settings(_env_file=None))) as client:
         spec = client.get('/openapi.json').json()
     assert spec['paths']['/api/v1/cases']['post']['responses']['201']
     assert 'CaseCreate' in spec['components']['schemas']

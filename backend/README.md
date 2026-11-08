@@ -1,6 +1,6 @@
 # RAKSA Backend
 
-Fondasi API Python/FastAPI untuk pelaporan gigitan hewan, dengan kontrak kasus dan observasi yang akan dihubungkan ke Supabase.
+Fondasi API Python/FastAPI untuk pelaporan gigitan hewan, dengan kontrak kasus dan observasi yang terhubung ke Supabase untuk penyimpanan kasus dan observasi.
 
 ## Menjalankan di PowerShell
 
@@ -25,10 +25,10 @@ Invoke-RestMethod http://127.0.0.1:8000/api/v1/health
 | Endpoint | Perilaku saat ini |
 | --- | --- |
 | GET /api/v1/health | 200 dengan status ok untuk proses API |
-| POST /api/v1/cases | Memvalidasi CaseCreate, lalu 503 persistence_not_configured |
-| POST /api/v1/cases/{case_id}/observations | Memvalidasi UUID dan ObservationCreate, lalu 503 persistence_not_configured |
+| POST /api/v1/cases | Menyimpan laporan warga dan mengembalikan 201 beserta ID kasus |
+| POST /api/v1/cases/{case_id}/observations | Memerlukan Bearer token petugas; menyimpan observasi dengan source officer, respons 201 |
 
-Respons 201 di OpenAPI mendefinisikan kontrak sukses untuk tahap persistensi. Frontend harus menangani 503 sebagai laporan yang belum tersimpan. Pemeriksaan koneksi database akan ditambahkan setelah integrasi.
+Respons 201 berarti data sudah tersimpan. Jika konfigurasi atau koneksi database gagal, API mengembalikan 503; jangan tampilkan pesan berhasil pada respons tersebut. Panduan payload/fetch ada di [docs/frontend-integration.md](docs/frontend-integration.md).
 
 Contoh payload kasus untuk Swagger adalah sebagai berikut.
 
@@ -58,9 +58,9 @@ RAKSA_APP_NAME mengatur judul API. RAKSA_CORS_ORIGINS berupa array JSON origin f
 
 ## Pekerjaan berikutnya
 
-Tentukan autentikasi dan hak akses pelapor/petugas, terapkan skema cases/observations, kemudian hubungkan operasi penyimpanan. Rancangan tabel tersedia di [docs/database.md](docs/database.md).
+Pembuatan kasus dan observasi sudah terhubung ke Supabase. Integrasi frontend serta alur akses pemilik dan pembacaan laporan perlu dikerjakan berikutnya. Rancangan tabel tersedia di [docs/database.md](docs/database.md).
 
-Ekstraksi cerita, antrean, rujukan fasilitas, dan aturan urgensi masuk tahap berikutnya. Endpoint scan video tersedia sebagai usulan visual yang belum tersimpan. Output vision harus dikonfirmasi pengguna. Darah yang tidak terlihat pada video tetap diperlakukan sebagai ketidakpastian. Aturan klinis memerlukan validasi tenaga kesehatan.
+Endpoint ekstraksi cerita sudah tersedia; antrean, rujukan fasilitas, dan aturan urgensi masuk tahap berikutnya. Endpoint scan video tersedia sebagai usulan visual yang belum tersimpan. Output vision harus dikonfirmasi pengguna. Darah yang tidak terlihat pada video tetap diperlakukan sebagai ketidakpastian. Aturan klinis memerlukan validasi tenaga kesehatan.
 
 ## Scan video luka (eksperimen MVP)
 
@@ -142,7 +142,7 @@ Prompt ada di `app/services/gemini_vision.py` pada `PROMPT`.
 
 ## Login petugas (MVP)
 
-Supabase Auth memverifikasi password; backend menerima username dan memetakannya
+Supabase Auth memverifikasi password; backend mendukung email langsung atau username dan memetakannya
 ke email internal `<username>@<domain>`. Username 3–32 karakter: huruf, angka,
 titik, garis bawah, atau tanda hubung; huruf besar dinormalisasi menjadi kecil.
 Atur `.env` lokal:
@@ -158,7 +158,7 @@ akun petugas secara administratif di Supabase Auth dengan email sesuai pola
 tersebut, dan berikan `app_metadata.role` bernilai `officer` melalui operasi
 administratif tepercaya. Jangan menggunakan `user_metadata` untuk role dan
 jangan membuka registrasi publik sebagai cara menjadi petugas. Provisioning
-akun dan role belum diotomatisasi; jangan berbagi secret key ke frontend.
+akun dan role tetap dilakukan admin; jangan berbagi secret key ke frontend.
 
 - `POST /api/v1/officer/auth/login`: JSON `username`, `password`; hasil berisi access token, refresh token, masa berlaku, dan ID petugas.
 - `GET /api/v1/officer/auth/me`: header `Authorization: Bearer <access_token>`; memeriksa sesi dan role ke Supabase.
@@ -170,8 +170,7 @@ layanan belum dikonfigurasi atau tidak tersedia. Logout tidak serta-merta
 membatalkan access token yang sudah diterbitkan; gunakan masa berlaku singkat
 dan tinjau kebijakan sesi sebelum penggunaan data sensitif. Terapkan HTTPS,
 penyimpanan token yang aman dan pembatasan percobaan login sebelum deployment.
-Endpoint kasus/antrean belum dilindungi atau dihubungkan ke login ini. Tes
-saat ini menggunakan respons tiruan; belum diuji pada proyek Supabase live.
+POST kasus terbuka untuk pelaporan warga; POST observasi memeriksa login dan role petugas. Endpoint antrean belum tersedia. Alur Auth dan observasi sudah diuji live dengan akun sementara yang kemudian dihapus.
 
 ## Shortcut masuk sebagai petugas
 
@@ -185,7 +184,7 @@ RAKSA_OFFICER_SHORTCUT_EMAIL=akun-demo@example.org
 RAKSA_OFFICER_SHORTCUT_PASSWORD=isi-password-akun-demo
 ```
 
-Akun harus sudah ada pada Supabase Auth dan memiliki `app_metadata.role` = `officer`. Tambahkan konfigurasi URL dan publishable key seperti bagian login. Endpoint shortcut belum diuji ke Supabase live.
+Akun harus sudah ada pada Supabase Auth dan memiliki `app_metadata.role` = `officer`. Tambahkan konfigurasi URL dan publishable key seperti bagian login. Shortcut berhasil diuji live menggunakan konfigurasi dan akun sementara; konfigurasi lokal tetap nonaktif.
 
 ## Tabel dan seeder profil petugas
 
@@ -227,8 +226,16 @@ curl -X POST http://127.0.0.1:8000/api/v1/stories/extract \
 
 Jika Gemini gagal atau key tidak tersedia, respons 200 dengan `mode: manual` dan `reason: ai_unavailable`. Audio tanpa ucapan yang bisa dipahami memakai `audio_unclear`. Format salah: 415/422; audio terlalu besar: 413. AI tidak menghitung urgensi atau diagnosis. Waktu/lokasi tetap berupa frasa asli, tanpa menebak timestamp atau koordinat.
 
-Audio, cerita, dan hasil ekstraksi tidak disimpan oleh endpoint ini. Endpoint kasus masih 503; penyimpanan laporan belum terhubung. Jangan mengirim seluruh `suggestion` langsung ke `POST /cases`: kontraknya berbeda. Pemetaan hasil konfirmasi, termasuk waktu/lokasi/luka, perlu diselaraskan saat integrasi persistensi. Tes otomatis memakai respons tiruan, bukan pengukuran akurasi transkripsi/model live.
+Audio, cerita, dan hasil ekstraksi tidak disimpan oleh endpoint ini. Hasil yang dikonfirmasi dapat disimpan melalui POST /cases. Jangan mengirim seluruh `suggestion` langsung ke `POST /cases`: kontraknya berbeda. Pemetaan hasil konfirmasi, termasuk waktu/lokasi/luka, perlu diselaraskan saat integrasi persistensi. Tes otomatis memakai respons tiruan, bukan pengukuran akurasi transkripsi/model live.
 
 Rujukan resmi: [audio Gemini](https://ai.google.dev/gemini-api/docs/audio) dan [structured output](https://ai.google.dev/gemini-api/docs/structured-output).
 
 Jika scan mengembalikan `ai_unavailable`, periksa model dan timeout di `.env`, lalu restart Uvicorn setelah `.env` diubah. Backend mencatat jenis kegagalan provider tanpa isi video atau API key. Model `gemini-3.5-flash-lite` berhasil diuji dengan video contoh pada 8 November 2026; hasil visual tetap perlu konfirmasi pengguna.
+
+## Konfigurasi penyimpanan
+
+Backend menerima `SUPABASE_URL` dan `SUPABASE_SERVICE_ROLE_KEY` yang sudah digunakan di `.env` lokal. Alias lainnya: `RAKSA_SUPABASE_URL`, `RAKSA_SUPABASE_SECRET_KEY`, atau `SUPABASE_SECRET_KEY`. Secret/service-role key hanya untuk server; frontend tidak mengirim atau menyimpannya. Auth memilih publishable key jika ada, atau memakai secret server sebagai fallback. Akun dan role officer tetap perlu disiapkan.
+
+Atur `RAKSA_CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]` untuk frontend Next.js lokal. Tambahkan origin deployment sebenarnya bila diperlukan; default tanpa konfigurasi tetap tidak mengizinkan origin browser. Restart Uvicorn setelah mengubah `.env`.
+
+Status dan batasan semua route tercatat pada tabel audit di [docs/frontend-integration.md](docs/frontend-integration.md). Endpoint yang belum diimplementasikan dibedakan dari fitur yang sudah diuji live.

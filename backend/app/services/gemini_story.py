@@ -1,6 +1,7 @@
 """Gemini audio transcription and extraction, with strict output validation."""
 import base64
 import json
+import logging
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from app.story_schemas import StorySuggestion, Transcript
@@ -48,6 +49,7 @@ def generate(settings, prompt, parts, output_model):
         text = ''.join(part.get('text', '') for part in parts)
         return output_model.model_validate_json(text)
     except (HTTPError, URLError, TimeoutError, OSError, ValueError, TypeError, KeyError, IndexError) as error:
+        logging.getLogger(__name__).warning('Gemini story failed: %s, HTTP status: %s', type(error).__name__, getattr(error, 'code', None))
         raise StoryUnavailable() from error
 
 
