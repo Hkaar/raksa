@@ -151,9 +151,15 @@ export type ReportDraftFields = {
 export type QuestionField = Exclude<DraftField, "bittenAt" | "kecamatan" | "desa">
 
 export type ScanRow = {
-  field: "bodyPart" | "contact" | "bleeding" | "woundCount" | "woundSize"
+  field: "bodyPart" | "contact" | "bleeding" | "woundCount" | "woundSize" | "features"
   value: Localized
   flag: ScanFlag
+}
+
+/** Result of the real wound-video upload; `rejected` = 413/415/422. */
+export type ScanOutcome = {
+  mode: "ai" | "manual"
+  reason: "ai_unavailable" | "video_unclear" | "rejected" | null
 }
 
 export type VaccineRow = {

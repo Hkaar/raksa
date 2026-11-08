@@ -22,9 +22,17 @@ export const scanId = {
     stepDone: "selesai",
     stepActive: "sedang berjalan",
     stepPending: "menunggu",
+    declined: "Video tidak dikirim ke AI.",
   },
   result: {
     title: "Hasil scan luka",
+    aiTitle: "Yang terbaca dari video",
+    manualTitle: "Video belum bisa dibaca",
+    manualReason: {
+      video_unclear: "Video kurang jelas. Rekam ulang di tempat terang, atau lanjutkan dan isi sendiri.",
+      ai_unavailable: "AI sedang tidak tersedia. Lanjutkan; petugas tetap memeriksa luka Anda.",
+      rejected: "Video tidak bisa diproses. Gunakan MP4 atau WebM, maksimal 12 MB.",
+    },
     findings: "Yang terlihat pada luka",
     hint: "Ketuk untuk ubah",
     fields: {
@@ -33,6 +41,7 @@ export const scanId = {
       bleeding: "Berdarah",
       woundCount: "Jumlah luka",
       woundSize: "Ukuran",
+      features: "Ciri yang tampak",
     },
     playVideo: "Putar video",
     disclaimer: "AI tidak menggantikan pemeriksaan. Petugas tetap menilai luka Anda — tetap ke Rabies Center hari ini.",
@@ -64,9 +73,17 @@ export const scanEn: typeof scanId = {
     stepDone: "done",
     stepActive: "in progress",
     stepPending: "waiting",
+    declined: "The video was not sent to AI.",
   },
   result: {
     title: "Wound scan result",
+    aiTitle: "What the video shows",
+    manualTitle: "The video couldn't be read",
+    manualReason: {
+      video_unclear: "The video is unclear. Record again in a bright place, or continue and fill it in yourself.",
+      ai_unavailable: "AI is not available right now. Continue; officers will still check your wound.",
+      rejected: "The video can't be processed. Use MP4 or WebM, max 12 MB.",
+    },
     findings: "What the wound shows",
     hint: "Tap to change",
     fields: {
@@ -75,6 +92,7 @@ export const scanEn: typeof scanId = {
       bleeding: "Bleeding",
       woundCount: "Number of wounds",
       woundSize: "Size",
+      features: "Visible features",
     },
     playVideo: "Play video",
     disclaimer: "AI does not replace an examination. Officers still assess your wound — still go to the Rabies Center today.",

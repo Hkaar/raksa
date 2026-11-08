@@ -2,11 +2,13 @@
 
 import { useSyncExternalStore } from "react"
 import { demo } from "@/lib/demo-data"
-import type { ReportDraftFields, ScanRow, VaccineRow } from "@/lib/types"
+import type { ReportDraftFields, ScanOutcome, ScanRow, VaccineRow } from "@/lib/types"
 
 export type ReportDraft = ReportDraftFields & {
   story: string
   scanRows: ScanRow[]
+  /** Outcome of the real wound scan; null = no upload (demo rows). */
+  scan: ScanOutcome | null
   vaccineRows: VaccineRow[]
   vaccineSource: "ai" | "manual" | null
 }
@@ -19,6 +21,7 @@ const INITIAL: ReportDraft = {
   story: "",
   scanRows: demo.reportDemo.scanResult.rows,
   vaccineRows: demo.reportDemo.vaccineCard.rows,
+  scan: null,
   vaccineSource: null,
 }
 
@@ -27,6 +30,8 @@ let cachedRaw: string | null = null
 let cachedDraft: ReportDraft = INITIAL
 /** Object URLs live in memory only; they die with the tab. */
 let media: DraftMedia = {}
+/** Raw blobs behind `media`, for uploading. */
+let blobs: Partial<Record<keyof DraftMedia, Blob>> = {}
 
 function emit() {
   for (const listener of listeners) listener()
@@ -39,7 +44,7 @@ function subscribe(listener: () => void) {
   }
 }
 
-function readDraft(): ReportDraft {
+export function getDraft(): ReportDraft {
   const raw = window.sessionStorage.getItem(STORAGE_KEY)
   if (raw !== cachedRaw) {
     cachedRaw = raw
@@ -53,7 +58,7 @@ function readDraft(): ReportDraft {
 }
 
 export function updateDraft(patch: Partial<ReportDraft>) {
-  window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ...readDraft(), ...patch }))
+  window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ...getDraft(), ...patch }))
   emit()
 }
 
@@ -62,11 +67,16 @@ export function setDraftMedia(kind: keyof DraftMedia, blob: Blob | null) {
   const previous = media[kind]
   if (previous) URL.revokeObjectURL(previous)
   media = { ...media, [kind]: blob ? URL.createObjectURL(blob) : undefined }
+  blobs = { ...blobs, [kind]: blob ?? undefined }
   emit()
 }
 
+export function getDraftBlob(kind: keyof DraftMedia): Blob | undefined {
+  return blobs[kind]
+}
+
 export function useReportDraft(): ReportDraft {
-  return useSyncExternalStore(subscribe, readDraft, () => INITIAL)
+  return useSyncExternalStore(subscribe, getDraft, () => INITIAL)
 }
 
 export function useDraftMedia(): DraftMedia {

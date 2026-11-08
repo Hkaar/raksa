@@ -134,7 +134,7 @@ export function ScanScreen() {
         <input
           ref={fileInput}
           type="file"
-          accept="video/*"
+          accept="video/mp4,video/webm"
           hidden
           onChange={(e) => {
             const file = e.target.files?.[0]
