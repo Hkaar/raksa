@@ -171,7 +171,6 @@ export type DemoData = {
   cases: Case[]
   reportDemo: {
     resultCaseCode: string
-    storyTranscript: Localized
     initialDraft: ReportDraftFields
     followUpQuestions: QuestionField[]
     formQuestions: QuestionField[]

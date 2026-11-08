@@ -532,10 +532,6 @@
   ],
   "reportDemo": {
     "resultCaseCode": "A7F3",
-    "storyTranscript": {
-      "id": "Tadi jam setengah delapan pagi anak saya digigit anjing liar di jari tangan, di Dauh Puri. Lukanya berdarah sedikit. Anjingnya kelihatan sakit, menyerang tanpa diganggu, lalu lari.",
-      "en": "At half past seven this morning a stray dog bit my child on the finger, in Dauh Puri. The wound bled a little. The dog looked sick, attacked without being provoked, then ran away."
-    },
     "initialDraft": {
       "bittenAt": "2026-11-06T07:30:00+08:00",
       "kecamatan": "denpasar_barat",
