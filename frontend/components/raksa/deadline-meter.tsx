@@ -34,7 +34,7 @@ export function DeadlineMeter({
 
   return (
     <div className={cn("flex w-full flex-col gap-3.5", className)}>
-      <div className="flex w-full flex-wrap items-end justify-between gap-x-4 gap-y-1">
+      <div className="flex w-full flex-wrap items-end justify-between gap-x-1 gap-y-1">
         <div className="flex flex-col gap-0.5">
           <p className="text-base/6 whitespace-nowrap text-muted-foreground">{copy.remaining}</p>
           <p className="text-[32px]/[35px] font-bold whitespace-nowrap text-foreground">

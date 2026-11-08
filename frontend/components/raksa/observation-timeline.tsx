@@ -35,7 +35,7 @@ export function ObservationTimeline({
       >
         <motion.div className="h-full rounded-full bg-primary" style={{ width }} />
       </div>
-      <div className="flex w-full items-start justify-between text-base whitespace-nowrap text-muted-foreground">
+      <div className="flex w-full items-start justify-between text-base/[19px] whitespace-nowrap text-muted-foreground">
         <span>{t(copy.day, { n: 1 })}</span>
         <span>{t(copy.day, { n: durationDays })}</span>
       </div>
