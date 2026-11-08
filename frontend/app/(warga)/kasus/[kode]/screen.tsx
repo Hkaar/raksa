@@ -90,9 +90,12 @@ export function StatusScreen({ code }: { code: string }) {
   return (
     <Screen layout="wide">
       <AppHeader className="md:px-8" />
-      {/* Mobile = design (`IWpFX`/`f9Nnc`); lg: observation + timeline left, summary + action right. */}
-      <Stagger className="flex w-full flex-col gap-9 px-4 py-8 md:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-x-12 lg:pb-12">
-        <div className="contents lg:flex lg:flex-col lg:gap-9">
+      {/*
+        Mobile = design (`IWpFX`/`f9Nnc`); md: observation + timeline left, summary + action right
+        (300px side column, 400px from lg).
+      */}
+      <Stagger className="flex w-full flex-col gap-9 px-4 py-8 md:grid md:grid-cols-[minmax(0,1fr)_300px] md:items-start md:gap-x-8 md:px-8 md:pb-12 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-x-12">
+        <div className="contents md:flex md:flex-col md:gap-9">
           <StaggerItem className="flex w-full flex-col gap-1.5">
             <p className="text-base text-muted-foreground">{t(copy.eyebrow, { code: c.code })}</p>
             <h1 className="text-[32px]/[35px] font-bold text-foreground">{copy.title}</h1>
@@ -169,7 +172,7 @@ export function StatusScreen({ code }: { code: string }) {
           </StaggerItem>
         </div>
 
-        <StaggerItem className="flex w-full flex-col gap-6 lg:sticky lg:top-6 lg:col-start-2 lg:row-start-1">
+        <StaggerItem className="flex w-full flex-col gap-6 md:sticky md:top-6 md:col-start-2 md:row-start-1">
           <section className="flex w-full flex-col">
             <h2 className="text-base font-medium text-foreground">{copy.summary}</h2>
             <div className="flex w-full flex-col items-start gap-1.5 border-b border-border py-3">
@@ -188,10 +191,10 @@ export function StatusScreen({ code }: { code: string }) {
               </div>
             ))}
           </section>
-          <div className="hidden w-full lg:flex [&>*]:flex-1">{action}</div>
+          <div className="hidden w-full md:flex [&>*]:flex-1">{action}</div>
         </StaggerItem>
       </Stagger>
-      <BottomBar className="pb-7 md:px-8 lg:hidden">{action}</BottomBar>
+      <BottomBar className="pb-7 md:hidden">{action}</BottomBar>
     </Screen>
   )
 }

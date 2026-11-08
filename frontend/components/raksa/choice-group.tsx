@@ -11,8 +11,14 @@ const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const
 
 type ChoiceVariant = "default" | "prominent"
 
-const ChoiceContext = React.createContext<{ variant: ChoiceVariant; indicator: boolean; value: string | undefined }>({
+const ChoiceContext = React.createContext<{
+  variant: ChoiceVariant
+  layout: "list" | "grid-2"
+  indicator: boolean
+  value: string | undefined
+}>({
   variant: "default",
+  layout: "list",
   indicator: true,
   value: undefined,
 })
@@ -29,7 +35,10 @@ type ChoiceGroupProps = {
   value: string | undefined
   /** Called with the newly selected value; deselecting the active item is ignored. */
   onValueChange: (value: string) => void
-  /** `list` = stacked rows (12px gap); `grid-2` = 2-column tiles (`kbpfq` animal grid, `rRqjA` duration). */
+  /**
+   * `list` = stacked rows (12px gap); `grid-2` = 2-column tiles (`kbpfq` animal grid, `rRqjA` duration),
+   * stacked when the container is under 310px (320px phones) so labels never run into the radio.
+   */
   layout?: "list" | "grid-2"
   /**
    * `default` = ToggleGroupItem (`IGXi7`; selected as in `kbpfq`/`rRqjA`: secondary-container fill,
@@ -57,8 +66,8 @@ export function ChoiceGroup({
   children,
   ...aria
 }: ChoiceGroupProps) {
-  const ctx = React.useMemo(() => ({ variant, indicator, value }), [variant, indicator, value])
-  return (
+  const ctx = React.useMemo(() => ({ variant, layout, indicator, value }), [variant, layout, indicator, value])
+  const group = (
     <ToggleGroup
       type="single"
       value={value ?? ""}
@@ -70,7 +79,7 @@ export function ChoiceGroup({
       orientation={layout === "list" ? "vertical" : "horizontal"}
       className={cn(
         "w-full rounded-none",
-        layout === "grid-2" ? "grid grid-cols-2 gap-3" : "flex flex-col items-stretch gap-3",
+        layout === "grid-2" ? "grid grid-cols-1 gap-3 @min-[310px]:grid-cols-2" : "flex flex-col items-stretch gap-3",
         className
       )}
       {...aria}
@@ -78,6 +87,7 @@ export function ChoiceGroup({
       <ChoiceContext value={ctx}>{children}</ChoiceContext>
     </ToggleGroup>
   )
+  return layout === "grid-2" ? <div className="@container w-full">{group}</div> : group
 }
 
 type ChoiceItemProps = {
@@ -91,7 +101,7 @@ type ChoiceItemProps = {
 }
 
 export function ChoiceItem({ value, label, description, icon: Icon, emphasis, className }: ChoiceItemProps) {
-  const { variant, indicator, value: groupValue } = React.useContext(ChoiceContext)
+  const { variant, layout, indicator, value: groupValue } = React.useContext(ChoiceContext)
   const selected = groupValue === value
 
   if (variant === "prominent") {
@@ -137,6 +147,8 @@ export function ChoiceItem({ value, label, description, icon: Icon, emphasis, cl
       className={cn(
         "group/choice flex h-auto min-h-14 w-full min-w-0 items-center justify-start gap-4 rounded-md border bg-card px-4 py-2 text-start text-base font-normal tracking-[0.5px] whitespace-normal text-foreground transition-colors duration-[160ms] ease-[var(--ease-raksa)] hover:bg-surface-container-low hover:text-foreground data-[state=on]:border-transparent data-[state=on]:bg-secondary-container data-[state=on]:text-on-secondary-container data-[state=on]:hover:bg-secondary-container data-[state=on]:hover:text-on-secondary-container aria-pressed:bg-secondary-container",
         emphasis ? "border-outline" : "border-border",
+        // Half-width tiles: tighter insets until the tile has room for the design's 16px.
+        layout === "grid-2" && "gap-3 px-3 @min-[400px]:gap-4 @min-[400px]:px-4",
         className
       )}
     >

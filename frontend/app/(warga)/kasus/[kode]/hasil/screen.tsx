@@ -30,9 +30,9 @@ import { requestUserPosition, useUserOrigin } from "@/lib/user-location"
 const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const
 
 /**
- * Hasil (`ZRxtB`/`KBklW`, `WMz1K`, `p8GJVp`). Mobile = design; `lg:` two columns — result, next steps
- * and report card left, the Rabies Center column (map, rows, route action) right — sticky only on
- * viewports tall enough to show it whole.
+ * Hasil (`ZRxtB`/`KBklW`, `WMz1K`, `p8GJVp`). Mobile = design; `md:` two columns — result, next steps
+ * and report card left, the Rabies Center column (map, rows, route action) right (300px, 400px from
+ * `lg`) — sticky only on viewports tall enough to show it whole.
  */
 export function HasilScreen({ code }: { code: string }) {
   const c = getCase(code) as Case
@@ -131,9 +131,9 @@ export function HasilScreen({ code }: { code: string }) {
   return (
     <Screen layout="wide">
       <AppHeader className="md:px-8" />
-      <Stagger className="flex w-full flex-col gap-9 px-4 py-8 md:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-x-12 lg:pb-12">
-        {/* Mobile: one column in design order (report card last); lg: this block is the left column. */}
-        <div className="contents lg:flex lg:flex-col lg:gap-9">
+      <Stagger className="flex w-full flex-col gap-9 px-4 py-8 md:grid md:grid-cols-[minmax(0,1fr)_300px] md:items-start md:gap-x-8 md:px-8 md:pb-12 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-x-12">
+        {/* Mobile: one column in design order (report card last); md: this block is the left column. */}
+        <div className="contents md:flex md:flex-col md:gap-9">
           <StaggerItem className="flex w-full flex-col items-start gap-3">
             {result}
             <Button variant="link" size="sm" onClick={() => setWhyOpen(true)}>
@@ -157,7 +157,7 @@ export function HasilScreen({ code }: { code: string }) {
             </Alert>
           </StaggerItem>
 
-          <StaggerItem className="w-full max-lg:order-last">
+          <StaggerItem className="w-full max-md:order-last">
             <section className="flex w-full flex-col gap-3">
               <SectionHeader title={copy.reportCard} className="pb-0" />
               <ReportCardMini caseData={c} />
@@ -173,13 +173,18 @@ export function HasilScreen({ code }: { code: string }) {
           </StaggerItem>
         </div>
 
-        <StaggerItem className="w-full lg:col-start-2 lg:row-start-1 lg:[@media(min-height:900px)]:sticky lg:[@media(min-height:900px)]:top-6">
+        <StaggerItem className="w-full md:col-start-2 md:row-start-1 md:[@media(min-height:900px)]:sticky md:[@media(min-height:900px)]:top-6">
           <section id="rabies-center" className="flex w-full scroll-mt-4 flex-col gap-3">
             <SectionHeader title={copy.nearestCenters} className="pb-0" />
             <div ref={mapBox} className="w-full scroll-mt-4">
-              <RabiesCenterMap centers={centers} origin={origin} selectedId={selectedId} className="lg:aspect-[16/11]" />
+              <RabiesCenterMap
+                centers={centers}
+                origin={origin}
+                selectedId={selectedId}
+                className="md:aspect-[4/3] lg:aspect-[16/11]"
+              />
             </div>
-            <div className="hidden w-full pt-1 lg:flex [&>*]:flex-1">{routeNearest}</div>
+            <div className="hidden w-full pt-1 md:flex [&>*]:flex-1">{routeNearest}</div>
             <div className="flex w-full flex-col">
               {centers.map((center, i) => (
                 <RabiesCenterRow
@@ -194,7 +199,7 @@ export function HasilScreen({ code }: { code: string }) {
           </section>
         </StaggerItem>
       </Stagger>
-      <BottomBar className="pb-7 md:px-8 lg:hidden">{routeNearest}</BottomBar>
+      <BottomBar className="pb-7 md:hidden">{routeNearest}</BottomBar>
       <WhySheet caseData={c} open={whyOpen} onOpenChange={setWhyOpen} />
       {card.node}
     </Screen>

@@ -39,7 +39,7 @@ export function UrgencyCard({
       animate={{ opacity: 1, scale: 1 }}
       transition={easeTransition(DURATION.card)}
       className={cn(
-        "flex w-full flex-col gap-5 rounded-xl p-6",
+        "flex w-full flex-col gap-5 rounded-xl p-5 min-[360px]:p-6",
         today ? "bg-urgent text-urgent-foreground" : "border border-soon-border bg-soon-bg text-foreground",
         className,
       )}
@@ -51,7 +51,7 @@ export function UrgencyCard({
           ) : (
             <ClockAlert {...ICON} className="size-8 shrink-0 text-soon" />
           )}
-          <h2 className={cn("text-[32px]/[37px] font-bold whitespace-nowrap", !today && "text-soon-text")}>
+          <h2 className={cn("min-w-0 text-[32px]/[37px] font-bold", !today && "text-soon-text")}>
             {m.enums.urgency[urgency]}
           </h2>
         </div>
@@ -82,7 +82,8 @@ export function UrgencyCard({
         <Button
           type="button"
           variant={today ? "emergency" : "default"}
-          className="w-full"
+          // Full-width and centered: the narrower inset only matters on ≤360px cards, where it keeps one line.
+          className="w-full px-4"
           onClick={onFindRabiesCenter}
         >
           <MapPin {...ICON} />

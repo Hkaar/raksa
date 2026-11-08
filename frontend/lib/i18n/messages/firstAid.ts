@@ -16,9 +16,23 @@ export const firstAidId = {
     cta: "Lanjut lapor",
     toast: "15 menit selesai. Lanjut lapor.",
   },
+  /** Scene card steps (pens `BIUma`/`E8Ofxp`): soap 15:00–14:00, rinse 14:00–00:00, antiseptic at 00:00. */
   steps: [
-    { title: "Sabun + air mengalir", sub: "Bilas seluruh luka selama 15 menit." },
-    { title: "Lalu ke Rabies Center", sub: "Hari ini juga, meski luka kecil." },
+    {
+      title: "Sabuni luka dan sekitarnya",
+      window: "15:00 – 14:00",
+      next: "Berikutnya: bilas di air mengalir, mulai 14:00.",
+    },
+    {
+      title: "Bilas di bawah air mengalir",
+      window: "14:00 – 00:00",
+      next: "Berikutnya: antiseptik di 00:00, lalu Rabies Center.",
+    },
+    {
+      title: "Oleskan antiseptik",
+      window: "00:00",
+      next: "Berikutnya: ke Rabies Center hari ini, meski luka kecil.",
+    },
   ],
 }
 
@@ -41,7 +55,20 @@ export const firstAidEn: typeof firstAidId = {
     toast: "15 minutes done. Continue to report.",
   },
   steps: [
-    { title: "Soap + running water", sub: "Rinse the whole wound for 15 minutes." },
-    { title: "Then go to a Rabies Center", sub: "Today, even if the wound is small." },
+    {
+      title: "Lather the wound and around it",
+      window: "15:00 – 14:00",
+      next: "Next: rinse under running water from 14:00.",
+    },
+    {
+      title: "Rinse under running water",
+      window: "14:00 – 00:00",
+      next: "Next: antiseptic at 00:00, then a Rabies Center.",
+    },
+    {
+      title: "Apply antiseptic",
+      window: "00:00",
+      next: "Next: go to a Rabies Center today, even if the wound is small.",
+    },
   ],
 }

@@ -34,7 +34,7 @@ export function DeadlineMeter({
 
   return (
     <div className={cn("flex w-full flex-col gap-3.5", className)}>
-      <div className="flex w-full items-end justify-between">
+      <div className="flex w-full flex-wrap items-end justify-between gap-x-4 gap-y-1">
         <div className="flex flex-col gap-0.5">
           <p className="text-base/6 whitespace-nowrap text-muted-foreground">{copy.remaining}</p>
           <p className="text-[32px]/[35px] font-bold whitespace-nowrap text-foreground">
@@ -67,7 +67,7 @@ export function DeadlineMeter({
         <motion.div className="absolute top-1 size-4 rounded-full border-3 border-soon bg-card" style={{ left }} />
       </div>
 
-      <div className="flex w-full items-start justify-between">
+      <div className="flex w-full flex-wrap items-start justify-between gap-x-4 gap-y-2">
         <div className="flex flex-col items-start">
           <p className="text-sm/[21px] whitespace-nowrap text-muted-foreground">{copy.bitten}</p>
           <p className="text-base/6 font-medium whitespace-nowrap text-foreground">{fmtDayTime(bittenAt, locale)}</p>

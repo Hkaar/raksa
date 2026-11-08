@@ -1,19 +1,22 @@
 "use client"
 
-import { ArrowRight, Hospital, Pause, Play, SoapDispenserDroplet, X } from "lucide-react"
+import { ArrowRight, Pause, Play, ShieldPlus, X } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
+import { FirstAidIllustration } from "@/components/raksa/first-aid-illustration"
+import { SoapScene } from "@/components/raksa/first-aid-scenes"
 import { LogoHeader } from "@/components/raksa/logo"
 import { Screen } from "@/components/raksa/screen"
-import { Stagger, StaggerItem } from "@/components/raksa/motion"
 import { useI18n } from "@/lib/i18n/provider"
 import { DURATION, easeTransition } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 const TOTAL_MS = 15 * 60 * 1000
+/** Step 1 (soap) runs 15:00–14:00; step 2 (rinse) 14:00–00:00; step 3 (antiseptic) at 00:00. */
+const SOAP_MS = 60 * 1000
 const RING_R = 108
 const RING_C = 2 * Math.PI * RING_R
 /** Arc gap between the remaining (active) arc and the elapsed track on each side (≈9.5°, per `E8Ofxp`). */
@@ -75,6 +78,69 @@ function TimerRing({ remaining, label }: { remaining: number; label: string }) {
       <span className="relative text-[57px]/[64px] font-normal tracking-[-0.25px] tabular-nums">{fmtClock(remaining)}</span>
       <span className="relative text-sm font-medium tracking-[0.1px] text-[#C1C7CE]">{label}</span>
     </div>
+  )
+}
+
+/** Current scene step (0 soap, 1 rinse, 2 antiseptic) and each step's segment fill (0–1). */
+function sceneProgress(status: Status, remaining: number) {
+  const elapsed = TOTAL_MS - remaining
+  const step = status === "done" || remaining <= 0 ? 2 : status === "idle" || elapsed < SOAP_MS ? 0 : 1
+  const rinse = Math.min(1, Math.max(0, (elapsed - SOAP_MS) / (TOTAL_MS - SOAP_MS)))
+  // The one-minute soap step and the antiseptic moment show full; rinse fills with the timer (`E8Ofxp`).
+  const fills = [1, step === 2 ? 1 : step === 1 ? rinse : 0, step === 2 ? 1 : 0]
+  return { step, fills }
+}
+
+/** Illustrated step card (pen `Scene Card`, `hbiJN`/`UoOW1`): animated scene, step meta, 3-part progress. */
+function SceneCard({ status, remaining }: { status: Status; remaining: number }) {
+  const { m, t } = useI18n()
+  const steps = m.firstAid.steps
+  const { step, fills } = sceneProgress(status, remaining)
+  const current = steps[step]
+
+  return (
+    <section className="flex w-full flex-col overflow-hidden rounded-lg bg-white/4">
+      <div className="relative h-[168px] w-full bg-[radial-gradient(ellipse_50%_60%_at_50%_55%,#7DD0FF24,#7DD0FF00)]">
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={step}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={easeTransition(0.24)}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            {step === 0 ? (
+              <SoapScene className="h-[168px] w-auto" />
+            ) : step === 1 ? (
+              <FirstAidIllustration className="h-[160px] w-auto text-[#7DD0FF]" />
+            ) : (
+              <ShieldPlus aria-hidden strokeWidth={1.25} className="size-[88px] text-[#7DD0FF]" />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <div aria-live="polite" className="flex flex-col gap-2 px-4 pt-3.5 pb-4">
+        <div className="flex items-center justify-between gap-3 text-xs">
+          <span className="font-semibold tracking-[1px] text-[#7DD0FF] uppercase">
+            {t(m.common.stepOf, { n: step + 1, total: steps.length })}
+          </span>
+          <span className="font-medium whitespace-nowrap text-[#C4E7FF] tabular-nums">{current.window}</span>
+        </div>
+        <p className="text-lg font-medium">{current.title}</p>
+        <p className="text-[13px]/[1.4] text-[#A9D8F5]">{current.next}</p>
+        <div aria-hidden className="flex gap-1 pt-1">
+          {fills.map((fill, i) => (
+            <div key={i} className="h-1 flex-1 overflow-hidden rounded-[2px] bg-white/12">
+              <div
+                className="h-full origin-left rounded-[2px] bg-[#7DD0FF] transition-transform duration-1000 ease-linear motion-reduce:transition-none"
+                style={{ transform: `scaleX(${fill})` }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -165,22 +231,7 @@ export function FirstAidScreen() {
               <TimerRing remaining={remaining} label={f.timeSub} />
             </div>
 
-            <Stagger gap={0.06} delay={0.1} className="flex w-full flex-col gap-2.5">
-              {f.steps.map((step, i) => {
-                const Icon = i === 0 ? SoapDispenserDroplet : Hospital
-                return (
-                  <StaggerItem key={i} className="flex items-center gap-3.5 rounded-lg bg-white/6 p-3.5">
-                    <div className="flex h-10 w-5 shrink-0 items-center justify-center">
-                      <Icon aria-hidden strokeWidth={1.75} className="size-5 text-[#7DD0FF]" />
-                    </div>
-                    <div className="flex flex-1 flex-col gap-0.5">
-                      <span className="text-base font-medium">{step.title}</span>
-                      <span className="text-sm/5 text-[#A9D8F5]">{step.sub}</span>
-                    </div>
-                  </StaggerItem>
-                )
-              })}
-            </Stagger>
+            <SceneCard status={status} remaining={remaining} />
           </div>
         </div>
 

@@ -107,7 +107,7 @@ export function OfficerCaseScreen({ code }: { code: string }) {
     toast(t(copy.started, { n: days }), { icon: <SavedBadge /> })
   }
 
-  const card = "flex w-full flex-col gap-4 rounded-xl border border-border bg-card p-6"
+  const card = "flex w-full flex-col gap-4 rounded-xl border border-border bg-card p-4 sm:p-6"
   const obs = view.observation
 
   return (
@@ -147,9 +147,12 @@ export function OfficerCaseScreen({ code }: { code: string }) {
                       <h3 className="text-base font-medium text-foreground">{g.title}</h3>
                       <dl className="flex flex-col">
                         {g.rows.map((r) => (
-                          <div key={r.label} className="flex gap-4 border-b border-border py-3">
-                            <dt className="w-[130px] shrink-0 text-base text-muted-foreground">{r.label}</dt>
-                            <dd className="min-w-0 flex-1 text-base/6 font-medium text-foreground">{r.value}</dd>
+                          <div
+                            key={r.label}
+                            className="flex flex-col gap-0.5 border-b border-border py-3 @[280px]:flex-row @[280px]:gap-4"
+                          >
+                            <dt className="text-base text-muted-foreground @[280px]:w-[130px] @[280px]:shrink-0">{r.label}</dt>
+                            <dd className="min-w-0 text-base/6 font-medium text-foreground @[280px]:flex-1">{r.value}</dd>
                           </div>
                         ))}
                       </dl>
@@ -225,11 +228,11 @@ export function OfficerCaseScreen({ code }: { code: string }) {
                           <span className="min-w-0 flex-1 truncate text-base text-foreground">{ownerHost}</span>
                         </div>
                         <div className="flex w-full flex-col gap-3 sm:flex-row">
-                          <Button variant="outline" onClick={copyLink} className="flex-1">
+                          <Button variant="outline" onClick={copyLink} className="sm:flex-auto">
                             <Copy {...ICON} />
                             {copy.copyLink}
                           </Button>
-                          <Button asChild className="flex-1">
+                          <Button asChild className="sm:flex-auto">
                             <a
                               href={`https://wa.me/?text=${encodeURIComponent(ownerUrl)}`}
                               target="_blank"
