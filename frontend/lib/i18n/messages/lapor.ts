@@ -1,7 +1,7 @@
 export const laporId = {
   voice: {
     title: "Apa yang terjadi?",
-    sub: "Ceritakan dengan kata-kata Anda sendiri. Boleh Bahasa Indonesia atau English.",
+    sub: "Ceritakan dengan kata-kata Anda sendiri. Boleh Bahasa Indonesia, English, atau Basa Bali.",
     micTitle: "Ketuk untuk bercerita",
     micSub: "Maks. 1 menit · bisa diedit setelahnya",
     recordingTitle: "Merekam… ketuk untuk selesai",
@@ -58,7 +58,7 @@ export const laporId = {
 export const laporEn: typeof laporId = {
   voice: {
     title: "What happened?",
-    sub: "Tell it in your own words. Indonesian or English are both fine.",
+    sub: "Tell it in your own words. Indonesian, English, or Balinese are all fine.",
     micTitle: "Tap to tell your story",
     micSub: "Max. 1 minute · you can edit it afterwards",
     recordingTitle: "Recording… tap to finish",

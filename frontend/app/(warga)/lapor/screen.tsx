@@ -270,9 +270,7 @@ function TypedStory({ micDenied, fromTranscript }: { micDenied: boolean; fromTra
           <Tabs value={tab} onValueChange={goTo}>
             <TabsList aria-label={ty.title}>
               <TabsTrigger value="story">{ty.tabs.story}</TabsTrigger>
-              <TabsTrigger value="voice" disabled={micDenied}>
-                {ty.tabs.voice}
-              </TabsTrigger>
+              <TabsTrigger value="voice">{ty.tabs.voice}</TabsTrigger>
               <TabsTrigger value="form">{ty.tabs.form}</TabsTrigger>
             </TabsList>
           </Tabs>
@@ -294,6 +292,7 @@ function TypedStory({ micDenied, fromTranscript }: { micDenied: boolean; fromTra
             value={text}
             maxLength={1000}
             fieldClassName="h-[200px]"
+            autoFocus={micDenied}
             error={error ? m.common.required : undefined}
             onChange={(e) => {
               setText(e.target.value)
