@@ -153,3 +153,7 @@ Ganti contoh URL dan key dengan nilai dari proyek RAKSA. Jangan tempel nilai key
 Skema ini masih perlu diselaraskan dengan `app/schemas.py`, karena API saat ini hanya memvalidasi kontrak dasar dan endpoint penulisan masih mengembalikan 503. Sebelum data nyata masuk, tentukan akses pelapor, petugas, dan pemilik hewan. Aturan urgensi dan informasi klinis wajib divalidasi tenaga kesehatan.
 
 Rujukan Supabase: [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [pengamanan Data API](https://supabase.com/docs/guides/api/securing-your-api), dan [API keys](https://supabase.com/docs/guides/getting-started/api-keys).
+
+## Tambahan rancangan: profil petugas
+
+`auth.users` 1 → 0..1 `public.officers` melalui `officers.id`; data profil terdiri dari `id` (UUID PK/FK), `full_name` (text wajib), `organization` dan `phone` (text opsional), serta `created_at` (timestamptz). Password dikelola Supabase Auth. SQL terpisah: [officers.sql](officers.sql). Tabel ini belum diverifikasi atau diterapkan pada database live, dan endpoint login saat ini belum membaca profilnya. Rancangan dua tabel di atas tetap dipakai untuk data kasus dan observasi.

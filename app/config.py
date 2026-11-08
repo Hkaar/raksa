@@ -13,3 +13,11 @@ class Settings(BaseSettings):
     gemini_api_key: str | None = None
     gemini_model: str = 'gemini-3.8-flash'
     gemini_timeout_seconds: int = Field(default=12, ge=1, le=30)
+
+    supabase_url: str | None = None
+    supabase_publishable_key: str | None = None
+    officer_email_domain: str | None = None
+
+    officer_shortcut_enabled: bool = False
+    officer_shortcut_email: str | None = None
+    officer_shortcut_password: str | None = None

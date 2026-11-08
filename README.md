@@ -139,3 +139,69 @@ catat sumber dan izin penggunaan gambar; keduanya belum diketahui.
 
 Rujukan bentuk luka: [HSE, Bites treatment guideline](https://assets.hse.ie/media/documents/Bites_treatment_guideline_-_dog_cat_or_human.pdf).
 Prompt ada di `app/services/gemini_vision.py` pada `PROMPT`.
+
+## Login petugas (MVP)
+
+Supabase Auth memverifikasi password; backend menerima username dan memetakannya
+ke email internal `<username>@<domain>`. Username 3–32 karakter: huruf, angka,
+titik, garis bawah, atau tanda hubung; huruf besar dinormalisasi menjadi kecil.
+Atur `.env` lokal:
+
+```dotenv
+RAKSA_SUPABASE_URL=https://PROJECT_REF.supabase.co
+RAKSA_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ISI_DARI_DASHBOARD
+RAKSA_OFFICER_EMAIL_DOMAIN=officers.example.org
+```
+
+Gunakan domain tetap yang disepakati tim, bukan otomatis `example.org`. Buat
+akun petugas secara administratif di Supabase Auth dengan email sesuai pola
+tersebut, dan berikan `app_metadata.role` bernilai `officer` melalui operasi
+administratif tepercaya. Jangan menggunakan `user_metadata` untuk role dan
+jangan membuka registrasi publik sebagai cara menjadi petugas. Provisioning
+akun dan role belum diotomatisasi; jangan berbagi secret key ke frontend.
+
+- `POST /api/v1/officer/auth/login`: JSON `username`, `password`; hasil berisi access token, refresh token, masa berlaku, dan ID petugas.
+- `GET /api/v1/officer/auth/me`: header `Authorization: Bearer <access_token>`; memeriksa sesi dan role ke Supabase.
+- `POST /api/v1/officer/auth/refresh`: JSON `refresh_token`; menerima pasangan token baru.
+- `POST /api/v1/officer/auth/logout`: Bearer token; meminta Supabase mengakhiri sesi.
+
+401 berarti kredensial/sesi ditolak, 403 berarti bukan petugas, 503 berarti
+layanan belum dikonfigurasi atau tidak tersedia. Logout tidak serta-merta
+membatalkan access token yang sudah diterbitkan; gunakan masa berlaku singkat
+dan tinjau kebijakan sesi sebelum penggunaan data sensitif. Terapkan HTTPS,
+penyimpanan token yang aman dan pembatasan percobaan login sebelum deployment.
+Endpoint kasus/antrean belum dilindungi atau dihubungkan ke login ini. Tes
+saat ini menggunakan respons tiruan; belum diuji pada proyek Supabase live.
+
+## Shortcut masuk sebagai petugas
+
+Tombol frontend “Demo sebagai officer” memanggil `POST /api/v1/officer/auth/shortcut` tanpa body. Respons sukses sama dengan login petugas: access token, refresh token, waktu berlaku, dan officer. Frontend menggunakan alur dan halaman petugas biasa. Jika belum diaktifkan atau dikonfigurasi, endpoint mengembalikan 503.
+
+Shortcut memberikan sesi akun tersebut kepada siapa pun yang memanggilnya. Gunakan **proyek Supabase demo terpisah**, akun petugas khusus, dan data contoh saja; jangan aktifkan pada proyek yang memuat data nyata. Isolasi ini harus disiapkan dalam konfigurasi deployment, bukan dilakukan otomatis oleh backend. Jangan taruh kredensial di frontend atau Git. Di environment server demo:
+
+```dotenv
+RAKSA_OFFICER_SHORTCUT_ENABLED=true
+RAKSA_OFFICER_SHORTCUT_EMAIL=akun-demo@example.org
+RAKSA_OFFICER_SHORTCUT_PASSWORD=isi-password-akun-demo
+```
+
+Akun harus sudah ada pada Supabase Auth dan memiliki `app_metadata.role` = `officer`. Tambahkan konfigurasi URL dan publishable key seperti bagian login. Endpoint shortcut belum diuji ke Supabase live.
+
+## Tabel dan seeder profil petugas
+
+SQL tabel `officers` tersedia di [docs/officers.sql](docs/officers.sql); jalankan sekali di SQL Editor. Seeder profil ada di `scripts/seed_officer.py` dan memerlukan akun yang sudah dibuat di Supabase Auth. Seeder tidak membuat akun/password atau menetapkan role; itu dilakukan admin di Supabase Auth. Password dikelola Supabase Auth dan tidak dimasukkan ke seeder.
+
+Git Bash, dari root repo:
+
+```bash
+export SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxx"
+export SUPABASE_SECRET_KEY="sb_secret_"
+export SUPABASE_OFFICER_ID="xxxxxxxxxxxxxxxxxxxx"
+export SUPABASE_OFFICER_NAME="KADEK DIMAS"
+export SUPABASE_OFFICER_ORGANIZATION="RSUD Wangaya"
+export SUPABASE_OFFICER_PHONE="0813333313"
+./.venv/Scripts/python.exe scripts/seed_officer.py --check
+./.venv/Scripts/python.exe scripts/seed_officer.py --apply
+```
+
+`SUPABASE_OFFICER_ID` harus sama dengan User UID dari akun Auth; organisasi dan nomor telepon boleh dikosongkan. `--apply` membuat atau memperbarui profil berdasarkan ID. Simpan secret key hanya di terminal privat; jangan commit atau kirim ke frontend. Tabel menyimpan profil, bukan password. Role `app_metadata` tetap perlu ditetapkan secara administratif. Seeder belum dijalankan ke database live.
