@@ -49,8 +49,7 @@ def main():
     request = Request(
         f"{base_url}/rest/v1/officers?{urlencode({'on_conflict': 'id'})}",
         data=json.dumps(row, ensure_ascii=False).encode("utf-8"),
-        headers={"apikey": secret, "Authorization": f"Bearer {secret}",
-                 "Content-Type": "application/json",
+        headers={"apikey": secret, "Content-Type": "application/json",
                  "Prefer": "resolution=merge-duplicates,return=minimal"},
         method="POST",
     )

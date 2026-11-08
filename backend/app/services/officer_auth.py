@@ -2,6 +2,7 @@
 import json
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+from urllib.parse import urlparse
 
 
 class AuthUnavailable(Exception):
@@ -13,9 +14,11 @@ class InvalidCredentials(Exception):
 
 
 def request_auth(settings, path, data=None, token=None):
-    if not settings.supabase_url or not settings.supabase_publishable_key:
+    key = settings.supabase_publishable_key or settings.supabase_secret_key
+    url = urlparse(settings.supabase_url or '')
+    if not key or url.scheme != 'https' or not url.hostname or not url.hostname.endswith('.supabase.co') or url.path or url.query or url.fragment:
         raise AuthUnavailable()
-    headers = {'apikey': settings.supabase_publishable_key, 'Content-Type': 'application/json'}
+    headers = {'apikey': key, 'Content-Type': 'application/json'}
     if token:
         headers['Authorization'] = f'Bearer {token}'
     request = Request(settings.supabase_url.rstrip('/') + '/auth/v1/' + path,

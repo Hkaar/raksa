@@ -27,8 +27,18 @@ class AnimalInfo(Contract):
     vaccination_card_path: StoragePath | None = None
 
 
+class WoundInfo(Contract):
+    event_type: Literal['bite', 'scratch', 'lick', 'other'] | None = None
+    body_part: ShortText | None = None
+    wound_count: int | None = Field(default=None, ge=1, le=20, strict=True)
+    skin_broken: StrictBool | None = None
+
+
 class CaseCreate(Contract):
     story: ReportText
+    village: ShortText | None = None
+    victim_age_group: ShortText | None = None
+    wound: WoundInfo = Field(default_factory=WoundInfo)
     occurred_at: AwareDatetime | None = None
     location: Location | None = None
     animal: AnimalInfo = Field(default_factory=AnimalInfo)
@@ -46,10 +56,13 @@ class CaseRead(CaseCreate):
 
 class ObservationCreate(Contract):
     observed_at: AwareDatetime
-    notes: ReportText
+    notes: ReportText | None = None
+    observation_day: int | None = Field(default=None, ge=1, le=14, strict=True)
+    animal_condition: Literal['healthy', 'sick', 'dead', 'missing'] | None = None
 
 
 class ObservationRead(ObservationCreate):
+    source: Literal['officer']
     id: UUID
     case_id: UUID
     created_at: AwareDatetime

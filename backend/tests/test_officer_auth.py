@@ -80,3 +80,17 @@ def test_shortcut_rejects_non_officer(monkeypatch):
                         officer_shortcut_email='demo@example.org', officer_shortcut_password='secret')
     with TestClient(create_app(settings)) as c:
         assert c.post('/api/v1/officer/auth/shortcut').status_code == 403
+
+
+def test_email_login_and_ambiguous_identifiers(monkeypatch):
+    seen = []
+    def provider(settings, path, data, token):
+        seen.append(data)
+        return {'user': {'id': '1', 'app_metadata': {'role': 'officer'}},
+                'access_token': 'access', 'refresh_token': 'refresh', 'expires_in': 3600, 'token_type': 'bearer'}
+    monkeypatch.setattr('app.api.officer_auth.request_auth', provider)
+    with TestClient(create_app(Settings(_env_file=None))) as c:
+        assert c.post('/api/v1/officer/auth/login', json={'email': 'officer@example.com', 'password': 'secret'}).status_code == 200
+        assert seen[0]['email'] == 'officer@example.com'
+        assert c.post('/api/v1/officer/auth/login', json={'email': 'officer@example.com', 'username': 'officer', 'password': 'secret'}).status_code == 422
+        assert c.post('/api/v1/officer/auth/login', json={'password': 'secret'}).status_code == 422
