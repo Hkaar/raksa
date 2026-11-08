@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Backend
 
-The app calls the RAKSA FastAPI backend (`backend/`) at `NEXT_PUBLIC_RAKSA_API_URL` (default `http://127.0.0.1:8000`; `/api/v1` is appended). Set it in `.env.local` when the backend runs elsewhere; the value is inlined at build time. The backend must list this app's origin (e.g. `http://localhost:3000`) in `RAKSA_CORS_ORIGINS`.
+The app calls the RAKSA FastAPI backend (`backend/`) at `NEXT_PUBLIC_RAKSA_API_URL` (default `http://127.0.0.1:8000`; `/api/v1` is appended). Copy `.env.example` to `.env.local` and set it when the backend runs elsewhere; the value is inlined at build time. The backend must list this app's origin (e.g. `http://localhost:3000`) in `RAKSA_CORS_ORIGINS`.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
