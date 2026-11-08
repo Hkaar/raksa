@@ -105,6 +105,23 @@ export function ScanAnalysisScreen() {
     return () => animation.cancel()
   }, [])
 
+  // Metadata can load before React's media listeners see it, so the ref reads it on attach too.
+  // MediaRecorder WebM reports `Infinity` until seeked past the end; the real value then arrives
+  // in `durationchange`, after which the poster frame is restored.
+  const readDuration = (el: HTMLVideoElement | null) => {
+    if (!el || el.readyState < HTMLMediaElement.HAVE_METADATA) return
+    if (Number.isFinite(el.duration)) {
+      if (el.dataset.probing) {
+        delete el.dataset.probing
+        el.currentTime = 0.1
+      }
+      setDuration(el.duration)
+    } else if (el.duration === Infinity && !el.dataset.probing) {
+      el.dataset.probing = "1"
+      el.currentTime = Number.MAX_SAFE_INTEGER
+    }
+  }
+
   const durationLabel = videoUrl ? (duration !== null ? clock(duration) : null) : SAMPLE_DURATION
 
   return (
@@ -114,14 +131,13 @@ export function ScanAnalysisScreen() {
         <div className="relative h-[300px] w-[260px] shrink-0 overflow-hidden rounded-xl bg-muted">
           {videoUrl ? (
             <video
+              ref={readDuration}
               src={`${videoUrl}#t=0.1`}
               muted
               playsInline
               preload="metadata"
-              onLoadedMetadata={(e) => {
-                const d = e.currentTarget.duration
-                if (Number.isFinite(d)) setDuration(d)
-              }}
+              onLoadedMetadata={(e) => readDuration(e.currentTarget)}
+              onDurationChange={(e) => readDuration(e.currentTarget)}
               className="absolute inset-0 size-full object-cover"
             />
           ) : (

@@ -3,7 +3,7 @@
 import { useRef, useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Play, RotateCcw } from "lucide-react"
+import { Play, RotateCcw, VideoOff } from "lucide-react"
 
 import { EditFieldSheet } from "@/components/raksa/edit-field-sheet"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -96,6 +96,7 @@ export function ScanResultScreen() {
 
         {draft.scan?.mode === "manual" ? (
           <Alert>
+            <VideoOff {...ICON} />
             <AlertDescription>{copy.manualReason[draft.scan.reason ?? "ai_unavailable"]}</AlertDescription>
           </Alert>
         ) : null}
