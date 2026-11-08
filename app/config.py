@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,3 +9,7 @@ class Settings(BaseSettings):
 
     app_name: str = 'RAKSA API'
     cors_origins: list[str] = []
+
+    gemini_api_key: str | None = None
+    gemini_model: str = 'gemini-3.8-flash'
+    gemini_timeout_seconds: int = Field(default=12, ge=1, le=30)

@@ -4,7 +4,7 @@
 
 Menyiapkan fondasi FastAPI berbahasa Python untuk prototipe hackathon. Tahap pertama menyediakan health check, konfigurasi melalui environment, kontrak data kasus dan observasi, serta rancangan penyimpanan Supabase yang dapat berkembang bersama frontend. Dokumentasi harus menjelaskan cara menjalankan dan menguji layanan. Integrasi eksternal yang belum dikonfigurasi tidak boleh berpura-pura berhasil.
 
-## Data dan API
+## Data dan API`
 
 - Dua entitas utama adalah `cases` dan `observations`. Informasi hewan berada dalam kasus; observasi mengacu pada kasus. Foto hewan dan kartu vaksin opsional. Waktu kejadian, cerita, lokasi, informasi korban dan hewan, serta status kasus disimpan sesuai kebutuhan yang telah dikonfirmasi; detail belum diketahui tetap opsional.
 - Kontrak API menggunakan validasi Pydantic dan endpoint berversi `/api/v1`. Pisahkan model permintaan dan respons, router, dan layanan agar mudah diubah. Sediakan dokumentasi OpenAPI bawaan FastAPI.
