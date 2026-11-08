@@ -7,6 +7,7 @@ from app.api.cases import router as cases_router
 from app.api.health import router as health_router
 from app.api.officer_auth import router as officer_auth_router
 from app.api.scans import router as scans_router
+from app.api.stories import router as stories_router
 from app.config import Settings
 
 
@@ -24,6 +25,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(officer_auth_router, prefix='/api/v1')
     application.include_router(cases_router, prefix='/api/v1')
     application.include_router(scans_router, prefix='/api/v1')
+    application.include_router(stories_router, prefix='/api/v1')
 
     @application.exception_handler(RequestValidationError)
     async def validation_error_handler(request, exc: RequestValidationError):

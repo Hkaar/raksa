@@ -134,7 +134,7 @@ commit;
 
 ## Seed dari terminal VS Code
 
-Setelah tabel berhasil dibuat, buka terminal VS Code di folder repo **Desktop**. Jalankan pemeriksaan lokal berikut tanpa koneksi database.
+Setelah tabel berhasil dibuat, buka terminal VS Code di direktori **backend/** pada repo Desktop. Jalankan pemeriksaan lokal berikut tanpa koneksi database.
 
 ```powershell
 python scripts/seed.py --check

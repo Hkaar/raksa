@@ -21,9 +21,14 @@
 
 ## Fitur MVP berikutnya — urutan dapat disepakati
 - [ ] Tentukan hak akses pelapor/petugas, lalu hubungkan kasus dan observasi ke Supabase.
-- [ ] Bantuan ekstraksi cerita dengan konfirmasi pengguna.
+- [x] Endpoint transkripsi dan ekstraksi cerita dengan kontrak konfirmasi serta fallback manual; 44 tes backend lulus (provider tiruan).
+- [ ] Uji transkripsi/ekstraksi langsung dengan Gemini, audio berizin, dan integrasi frontend; belum mengukur akurasi.
+- [ ] Selaraskan hasil konfirmasi cerita dengan kontrak persistensi kasus.
 - [ ] Aturan urgensi Python dan validasi oleh tenaga kesehatan.
 - [ ] Rujukan fasilitas dan antrean petugas.
 - [ ] Integrasi frontend dan pengujian alur menyeluruh.
 
 Fitur owner ditunda. Jangan tandai selesai hanya karena skema atau kontrak sudah tersedia. Saat menyelesaikan pekerjaan, catat pengujian yang dilakukan serta hal yang masih belum diverifikasi.
+
+## Struktur repo
+- [x] Pindahkan backend ke subfolder `backend/` beserta dokumentasi dan konfigurasi lokal. Python 3.12.3, 44 tes lulus, seed --check valid dan .env terbaca dari lokasi baru. Environment lama dicadangkan lokal sebagai `.venv-before-move/` (diabaikan Git).
