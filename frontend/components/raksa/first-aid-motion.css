@@ -1,0 +1,87 @@
+/*
+ * First-aid action motion (pen shaders `tap-water.glsl` on `g1Jtq`, `scene-bubbles.glsl` on `eweok`),
+ * rebuilt as SVG + CSS. Reduced motion: water shows as still solid streams; drops and bubbles hide.
+ */
+
+.raksa-water-stream {
+  stroke-dasharray: 7 4;
+  animation: raksa-water-flow 0.6s linear infinite;
+}
+
+.raksa-water-drop {
+  opacity: 0;
+  animation: raksa-water-drop var(--drop-duration, 1.1s) linear var(--drop-delay, 0s) infinite;
+}
+
+.raksa-bubble-rise {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: raksa-bubble-rise var(--bubble-duration, 3s) linear var(--bubble-delay, 0s) infinite;
+}
+
+.raksa-bubble-sway {
+  animation: raksa-bubble-sway 2.8s ease-in-out var(--bubble-delay, 0s) infinite alternate;
+}
+
+@keyframes raksa-water-flow {
+  from {
+    stroke-dashoffset: 11;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes raksa-water-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--drop-fall, 44px));
+  }
+}
+
+@keyframes raksa-bubble-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  15% {
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--bubble-rise, -110px)) scale(1.2);
+  }
+}
+
+@keyframes raksa-bubble-sway {
+  from {
+    transform: translateX(-4px);
+  }
+  to {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raksa-water-stream {
+    stroke-dasharray: none;
+    animation: none !important;
+  }
+  .raksa-water-drop,
+  .raksa-bubble-rise,
+  .raksa-bubble-sway {
+    animation: none !important;
+  }
+}
