@@ -107,7 +107,7 @@ function SelectContent({
         <SelectScrollUpButton />
         <SelectPrimitive.Viewport
           data-position={position}
-          className="flex flex-col gap-0.5 data-[position=popper]:w-full data-[position=popper]:min-w-(--radix-select-trigger-width)"
+          className="flex flex-col gap-0.5 data-[position=popper]:w-full"
         >
           {children}
         </SelectPrimitive.Viewport>
@@ -130,7 +130,7 @@ function SelectLabel({
   )
 }
 
-/** SelectItem: 48px, 12px side padding, 8px radius; selected = secondary-container fill. */
+/** SelectItem (`YojkM`): 48px, 12px side padding, 8px radius; highlighted/selected = secondary-container fill. */
 function SelectItem({
   className,
   children,
@@ -140,7 +140,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex h-12 w-full cursor-default items-center gap-2 rounded-sm ps-3 pe-10 text-base text-foreground outline-hidden select-none transition-colors duration-[120ms] data-highlighted:bg-state-hover data-[state=checked]:bg-secondary-container data-[state=checked]:text-on-secondary-container data-disabled:pointer-events-none data-disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+        "relative flex h-12 w-full cursor-default items-center gap-2 rounded-sm ps-3 pe-10 text-base text-foreground outline-hidden select-none transition-colors duration-[120ms] data-highlighted:bg-secondary-container data-highlighted:text-on-secondary-container data-[state=checked]:bg-secondary-container data-[state=checked]:text-on-secondary-container data-disabled:pointer-events-none data-disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
         className
       )}
       {...props}

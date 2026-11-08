@@ -52,7 +52,8 @@ export function VaccineCardScreen() {
       blurred={blurry}
       reticle={{ width: 330, height: 210, top: 200, color: blurry ? "white" : "primary", scanLineTop: blurry ? null : 104 }}
       topCenter={
-        <div className="rounded-full bg-black/30 px-3.5 py-2 text-sm font-medium whitespace-nowrap text-white">
+        <div className="flex items-center gap-2 rounded-full bg-black/30 px-3.5 py-2 text-sm font-medium whitespace-nowrap text-white">
+          <span aria-hidden className="size-2.5 shrink-0 rounded-full bg-destructive" />
           {copy.pill}
         </div>
       }

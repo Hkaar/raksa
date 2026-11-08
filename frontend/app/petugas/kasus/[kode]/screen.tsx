@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { AppHeaderDesktop } from "@/components/raksa/app-header-desktop"
 import { ChoiceGroup, ChoiceItem } from "@/components/raksa/choice-group"
 import { ObservationTimeline } from "@/components/raksa/observation-timeline"
+import { OfficerGuard } from "@/components/raksa/officer-guard"
 import { Screen } from "@/components/raksa/screen"
 import { CategoryBadge, EscalationBadge, InfoBadge, SavedBadge, UrgencyBadge } from "@/components/raksa/status-badges"
 import { Badge } from "@/components/ui/badge"
@@ -88,29 +89,33 @@ export function OfficerCaseScreen({ code }: { code: string }) {
   const ownerHost = `${new URL(origin).host}${ownerPath}`
   const related = c.relatedCases.map(getCase).filter((r): r is Case => Boolean(r))
 
+  /** The design places officer toasts bottom-right on desktop (`txgHS`). */
+  const toastAt = { position: "bottom-right" } as const
+
   async function copySummary() {
     const lines = [
       t(copy.title, { code: c.code }),
       ...groups.flat().flatMap((g) => [`${g.title}`, ...g.rows.map((r) => `${r.label}: ${r.value}`)]),
     ]
     await navigator.clipboard.writeText(lines.join("\n"))
-    toast(copy.summaryCopied)
+    toast(copy.summaryCopied, toastAt)
   }
 
   async function copyLink() {
     await navigator.clipboard.writeText(ownerUrl)
-    toast(copy.linkCopied)
+    toast(copy.linkCopied, toastAt)
   }
 
   function start() {
     startObservation(c.code, days)
-    toast(t(copy.started, { n: days }), { icon: <SavedBadge /> })
+    toast(t(copy.started, { n: days }), { ...toastAt, icon: <SavedBadge /> })
   }
 
-  const card = "flex w-full flex-col gap-4 rounded-xl border border-border bg-card p-4 sm:p-6"
+  const card = "flex w-full flex-col gap-4 rounded-xl bg-card p-4 outline-1 -outline-offset-1 outline-border sm:p-6"
   const obs = view.observation
 
   return (
+    <OfficerGuard>
     <Screen layout="immersive">
       <AppHeaderDesktop />
       <div className="flex w-full flex-1 flex-col items-start gap-5 px-4 pt-6 pb-10 md:px-8 lg:px-10">
@@ -133,7 +138,7 @@ export function OfficerCaseScreen({ code }: { code: string }) {
               <h2 id="summary-title" className="text-[22px]/[25px] font-bold text-foreground">
                 {copy.summaryTitle}
               </h2>
-              <Button variant="outline" onClick={copySummary} className="h-12">
+              <Button variant="outline" onClick={copySummary}>
                 <Copy {...ICON} />
                 {copy.copySummary}
               </Button>
@@ -144,12 +149,12 @@ export function OfficerCaseScreen({ code }: { code: string }) {
                   {column.map((g, gi) => (
                     <div key={g.title} className="flex flex-col gap-1">
                       {gi > 0 ? <div aria-hidden className="h-7" /> : null}
-                      <h3 className="text-base font-medium text-foreground">{g.title}</h3>
-                      <dl className="flex flex-col">
+                      <h3 className="text-base/[1.2] font-medium text-foreground">{g.title}</h3>
+                      <dl className="flex flex-col gap-1">
                         {g.rows.map((r) => (
                           <div
                             key={r.label}
-                            className="flex flex-col gap-0.5 border-b border-border py-3 @[280px]:flex-row @[280px]:gap-4"
+                            className="flex flex-col gap-0.5 border-b border-border pt-3 pb-[11px] @[280px]:flex-row @[280px]:gap-4"
                           >
                             <dt className="text-base text-muted-foreground @[280px]:w-[130px] @[280px]:shrink-0">{r.label}</dt>
                             <dd className="min-w-0 text-base/6 font-medium text-foreground @[280px]:flex-1">{r.value}</dd>
@@ -166,7 +171,7 @@ export function OfficerCaseScreen({ code }: { code: string }) {
           <div className="flex w-full flex-col gap-6 lg:w-[480px] lg:shrink-0">
             {related.length > 0 ? (
               <section aria-labelledby="related-title" className={card}>
-                <h2 id="related-title" className="text-base font-medium text-foreground">
+                <h2 id="related-title" className="text-base/[1.2] font-medium text-foreground">
                   {copy.relatedTitle}
                 </h2>
                 <ul className="flex flex-col gap-4">
@@ -222,17 +227,17 @@ export function OfficerCaseScreen({ code }: { code: string }) {
                   >
                     {obs ? (
                       <>
-                        <p className="text-base font-medium text-foreground">{copy.linkLabel}</p>
+                        <p className="text-base/[1.2] font-medium text-foreground">{copy.linkLabel}</p>
                         <div className="flex h-12 w-full items-center gap-2 rounded-md border border-outline bg-muted px-3.5">
                           <LinkIcon {...ICON} className="size-[18px] shrink-0 text-primary" />
                           <span className="min-w-0 flex-1 truncate text-base text-foreground">{ownerHost}</span>
                         </div>
                         <div className="flex w-full flex-col gap-3 sm:flex-row">
-                          <Button variant="outline" onClick={copyLink} className="sm:flex-auto">
+                          <Button variant="outline" onClick={copyLink} className="sm:flex-1">
                             <Copy {...ICON} />
                             {copy.copyLink}
                           </Button>
-                          <Button asChild className="sm:flex-auto">
+                          <Button asChild className="whitespace-nowrap sm:flex-1">
                             <a
                               href={`https://wa.me/?text=${encodeURIComponent(ownerUrl)}`}
                               target="_blank"
@@ -243,11 +248,11 @@ export function OfficerCaseScreen({ code }: { code: string }) {
                             </a>
                           </Button>
                         </div>
-                        <p className="text-sm text-muted-foreground">{copy.linkNote}</p>
+                        <p className="text-sm/4 text-muted-foreground">{copy.linkNote}</p>
                       </>
                     ) : (
                       <>
-                        <p id="duration-label" className="text-base font-medium text-foreground">
+                        <p id="duration-label" className="text-base/[1.2] font-medium text-foreground">
                           {copy.durationLabel}
                         </p>
                         <ChoiceGroup
@@ -278,5 +283,6 @@ export function OfficerCaseScreen({ code }: { code: string }) {
         </div>
       </div>
     </Screen>
+    </OfficerGuard>
   )
 }

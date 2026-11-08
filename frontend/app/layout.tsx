@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Roboto } from "next/font/google"
+import { Urbanist } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -7,7 +7,7 @@ import { I18nProvider } from "@/lib/i18n/provider"
 import { Toaster } from "@/components/ui/sonner"
 import { MotionProvider } from "@/components/motion-provider"
 
-const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" })
+const urbanist = Urbanist({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
   title: "RAKSA",
@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="id" suppressHydrationWarning className={cn("h-full antialiased font-sans", roboto.variable)}>
+    <html lang="id" suppressHydrationWarning className={cn("h-full antialiased font-sans", urbanist.variable)}>
       <body className="flex min-h-full flex-col">
         <ThemeProvider>
           <I18nProvider>

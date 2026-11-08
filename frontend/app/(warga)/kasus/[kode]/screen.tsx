@@ -159,7 +159,7 @@ export function StatusScreen({ code }: { code: string }) {
                       <div className={cn("flex flex-1 flex-col gap-0.5", !last && "pb-[18px]")}>
                         <p className="text-sm/[21px] text-muted-foreground">{fmtDayTime(e.at, locale)}</p>
                         <div className="flex w-full flex-wrap items-center gap-2">
-                          {alarm && <TriangleAlert {...ICON} className="size-[18px] text-destructive" />}
+                          {alarm && <TriangleAlert {...ICON} className="size-[18px] text-foreground" />}
                           <p className={cn("text-base/6 text-foreground", last && "font-medium")}>{eventText(e)}</p>
                           {e.kind === "reported" && <UrgencyBadge urgency={e.urgency} />}
                         </div>

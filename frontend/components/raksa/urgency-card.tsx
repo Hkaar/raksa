@@ -47,9 +47,9 @@ export function UrgencyCard({
       <div className="flex w-full flex-col gap-2">
         <div className="flex items-center gap-2.5">
           {today ? (
-            <OctagonAlert {...ICON} className="size-8 shrink-0" />
+            <OctagonAlert {...ICON} className="size-7 shrink-0" />
           ) : (
-            <ClockAlert {...ICON} className="size-8 shrink-0 text-soon" />
+            <ClockAlert {...ICON} className="size-7 shrink-0 text-soon" />
           )}
           <h2 className={cn("min-w-0 text-[32px]/[37px] font-bold", !today && "text-soon-text")}>
             {m.enums.urgency[urgency]}

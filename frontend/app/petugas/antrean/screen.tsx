@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useRef } from "react"
 
 import { AppHeaderDesktop } from "@/components/raksa/app-header-desktop"
+import { OfficerGuard } from "@/components/raksa/officer-guard"
 import { Screen } from "@/components/raksa/screen"
 import { EscalationBadge, UrgencyBadge } from "@/components/raksa/status-badges"
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -79,6 +80,7 @@ export function OfficerQueueScreen() {
   }
 
   return (
+    <OfficerGuard>
     <Screen layout="immersive">
       <AppHeaderDesktop />
       <div className="flex w-full flex-1 flex-col gap-4 px-4 py-6 md:gap-6 md:px-8 md:py-8 lg:p-10">
@@ -244,8 +246,9 @@ export function OfficerQueueScreen() {
           </motion.ul>
         </div>
 
-        <p className="text-sm text-muted-foreground">{copy.footnote}</p>
+        <p className="hidden text-sm text-muted-foreground md:block">{copy.footnote}</p>
       </div>
     </Screen>
+    </OfficerGuard>
   )
 }

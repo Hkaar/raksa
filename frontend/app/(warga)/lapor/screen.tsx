@@ -1,11 +1,13 @@
 "use client"
 
-import { CalendarClock, Droplet, Dog, Hand, Keyboard, MapPin, MicOff } from "lucide-react"
+import { CalendarClock, Droplet, Dog, Hand, Keyboard, LoaderCircle, MapPin, MicOff, ScrollText } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
 
+import { AiConsentSheet } from "@/components/raksa/ai-consent-sheet"
 import { AppHeader } from "@/components/raksa/app-header"
 import { MicButton } from "@/components/raksa/mic-button"
 import { BottomBar } from "@/components/raksa/bottom-bar"
@@ -15,13 +17,15 @@ import { Screen } from "@/components/raksa/screen"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
+import { getAiConsent, setAiConsent } from "@/lib/ai-consent"
+import { extractStory, transcribeStory, type StorySuggestion } from "@/lib/api"
 import { isBiteStory } from "@/lib/demo-ai"
-import { demo } from "@/lib/demo-data"
 import { useI18n } from "@/lib/i18n/provider"
 import { DURATION, easeTransition, fadeUp, staggerParent } from "@/lib/motion"
 import { createRecorder, requestMic, stopStream } from "@/lib/media"
+import { draftPatchFromStory, isContactEvent } from "@/lib/story-suggestion"
 
-import { updateDraft } from "./report-draft"
+import { getDraft, updateDraft } from "./report-draft"
 
 const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const
 const MAX_RECORD_S = 60
@@ -29,24 +33,31 @@ const MAX_RECORD_S = 60
 export function LaporScreen() {
   const params = useSearchParams()
   const micDenied = params.get("keadaan") === "mikrofon-ditolak"
-  if (micDenied || params.get("mode") === "ketik") return <TypedStory micDenied={micDenied} />
+  const fromTranscript = params.get("transkrip") === "1"
+  if (micDenied || params.get("mode") === "ketik")
+    return <TypedStory key={String(fromTranscript)} micDenied={micDenied} fromTranscript={fromTranscript} />
   return <VoiceStory />
 }
 
 function VoiceStory() {
   const router = useRouter()
-  const { m, locale } = useI18n()
+  const { m } = useI18n()
   const v = m.lapor.voice
   const [state, setState] = useState<"idle" | "recording" | "processing">("idle")
   const [elapsed, setElapsed] = useState(0)
   const streamRef = useRef<MediaStream | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
   const timersRef = useRef<number[]>([])
+  const chunksRef = useRef<Blob[]>([])
+  const [consentOpen, setConsentOpen] = useState(false)
 
   useEffect(
     () => () => {
       timersRef.current.forEach((id) => window.clearTimeout(id))
-      if (recorderRef.current?.state === "recording") recorderRef.current.stop()
+      if (recorderRef.current?.state === "recording") {
+        recorderRef.current.onstop = null
+        recorderRef.current.stop()
+      }
       stopStream(streamRef.current)
     },
     [],
@@ -59,15 +70,31 @@ function VoiceStory() {
     stopStream(streamRef.current)
     streamRef.current = null
     setState("processing")
-    timersRef.current.push(
-      window.setTimeout(() => {
-        updateDraft({ story: demo.reportDemo.storyTranscript[locale] })
-        router.push("/lapor/pertanyaan/1")
-      }, 1200),
-    )
+  }
+
+  async function transcribe(audio: Blob) {
+    try {
+      const r = await transcribeStory(audio)
+      if (r.mode === "ai" && r.transcript) {
+        updateDraft({ story: r.transcript })
+        router.push("/lapor?mode=ketik&transkrip=1")
+        return
+      }
+    } catch {}
+    toast(v.aiFailed)
+    router.push("/lapor?mode=ketik")
   }
 
   async function start() {
+    const consent = getAiConsent()
+    if (consent === "declined") {
+      router.push("/lapor?mode=ketik")
+      return
+    }
+    if (consent === null) {
+      setConsentOpen(true)
+      return
+    }
     const result = await requestMic()
     if ("error" in result) {
       router.replace("/lapor?keadaan=mikrofon-ditolak")
@@ -76,6 +103,11 @@ function VoiceStory() {
     streamRef.current = result.stream
     const recorder = createRecorder(result.stream)
     recorderRef.current = recorder
+    chunksRef.current = []
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunksRef.current.push(e.data)
+    }
+    recorder.onstop = () => void transcribe(new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" }))
     recorder.start()
     const startedAt = Date.now()
     setElapsed(0)
@@ -163,17 +195,29 @@ function VoiceStory() {
           {v.formLink}
         </Link>
       </div>
+      <AiConsentSheet
+        open={consentOpen}
+        onDismiss={() => setConsentOpen(false)}
+        onDecide={(granted) => {
+          setAiConsent(granted ? "granted" : "declined")
+          setConsentOpen(false)
+          if (granted) void start()
+          else router.push("/lapor?mode=ketik")
+        }}
+      />
     </Screen>
   )
 }
 
-function TypedStory({ micDenied }: { micDenied: boolean }) {
+function TypedStory({ micDenied, fromTranscript }: { micDenied: boolean; fromTranscript: boolean }) {
   const router = useRouter()
   const { m } = useI18n()
   const ty = m.lapor.typed
-  const [text, setText] = useState("")
+  const [text, setText] = useState(() => (fromTranscript && typeof window !== "undefined" ? getDraft().story : ""))
   const [tab, setTab] = useState("story")
   const [error, setError] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [consentOpen, setConsentOpen] = useState(false)
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -182,12 +226,30 @@ function TypedStory({ micDenied }: { micDenied: boolean }) {
       setError(true)
       return
     }
-    if (isBiteStory(story)) {
-      updateDraft({ story })
-      router.push("/lapor/pertanyaan/1")
-    } else {
-      router.push("/lapor/bukan-gigitan")
+    const consent = getAiConsent()
+    if (consent === null) {
+      setConsentOpen(true)
+      return
     }
+    void proceed(story, consent === "granted")
+  }
+
+  async function proceed(story: string, useAi: boolean) {
+    setSubmitting(true)
+    let suggestion: StorySuggestion | null = null
+    if (useAi) {
+      try {
+        const r = await extractStory(story)
+        if (r.mode === "ai") suggestion = r.suggestion
+      } catch {}
+    }
+    if (!isBiteStory(story) && !isContactEvent(suggestion)) {
+      setSubmitting(false)
+      router.push("/lapor/bukan-gigitan")
+      return
+    }
+    updateDraft({ story, ...(suggestion ? draftPatchFromStory(suggestion) : {}) })
+    router.push("/lapor/pertanyaan/1")
   }
 
   function goTo(next: string) {
@@ -208,9 +270,7 @@ function TypedStory({ micDenied }: { micDenied: boolean }) {
           <Tabs value={tab} onValueChange={goTo}>
             <TabsList aria-label={ty.title}>
               <TabsTrigger value="story">{ty.tabs.story}</TabsTrigger>
-              <TabsTrigger value="voice" disabled={micDenied}>
-                {ty.tabs.voice}
-              </TabsTrigger>
+              <TabsTrigger value="voice">{ty.tabs.voice}</TabsTrigger>
               <TabsTrigger value="form">{ty.tabs.form}</TabsTrigger>
             </TabsList>
           </Tabs>
@@ -220,12 +280,19 @@ function TypedStory({ micDenied }: { micDenied: boolean }) {
               <AlertDescription>{ty.micDenied}</AlertDescription>
             </Alert>
           ) : null}
+          {fromTranscript ? (
+            <Alert>
+              <ScrollText {...ICON} />
+              <AlertDescription>{ty.transcriptReview}</AlertDescription>
+            </Alert>
+          ) : null}
           <LabeledTextarea
             label={ty.label}
             placeholder={ty.placeholder}
             value={text}
             maxLength={1000}
             fieldClassName="h-[200px]"
+            autoFocus={micDenied}
             error={error ? m.common.required : undefined}
             onChange={(e) => {
               setText(e.target.value)
@@ -234,9 +301,21 @@ function TypedStory({ micDenied }: { micDenied: boolean }) {
           />
         </div>
         <BottomBar>
-          <Button type="submit">{ty.submit}</Button>
+          <Button type="submit" disabled={submitting} aria-busy={submitting || undefined}>
+            {ty.submit}
+            {submitting ? <LoaderCircle {...ICON} className="animate-spin motion-reduce:animate-none" /> : null}
+          </Button>
         </BottomBar>
       </form>
+      <AiConsentSheet
+        open={consentOpen}
+        onDismiss={() => setConsentOpen(false)}
+        onDecide={(granted) => {
+          setAiConsent(granted ? "granted" : "declined")
+          setConsentOpen(false)
+          void proceed(text.trim(), granted)
+        }}
+      />
     </Screen>
   )
 }

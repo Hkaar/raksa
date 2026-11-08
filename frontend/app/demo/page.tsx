@@ -107,7 +107,7 @@ export default function DemoPage() {
       <Section
         title="Petugas"
         links={petugas}
-        note={`Akun demo: ${demo.meta.officerAccount.email} · kata sandi ${demo.meta.officerAccount.password}. "Muat data contoh" menghapus observasi dan laporan pemilik yang dibuat di browser ini.`}
+        note={`Masuk memakai akun petugas di backend (Supabase) atau tombol "Masuk sebagai demo" bila shortcut diaktifkan. "Muat data contoh" menghapus observasi dan laporan pemilik yang dibuat di browser ini.`}
         action={<ResetDemoButton />}
       />
       <Section title="Pemilik hewan" links={pemilik} />

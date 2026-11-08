@@ -10,6 +10,7 @@ export const laporId = {
     hints: { when: "Kapan", where: "Di mana", animal: "Hewan apa", bodyPart: "Bagian tubuh", bleeding: "Berdarah?" },
     typeInstead: "Ketik saja",
     formLink: "Lebih suka formulir? Isi formulir singkat",
+    aiFailed: "Cerita belum bisa dibaca otomatis. Silakan ketik cerita Anda.",
   },
   typed: {
     title: "Apa yang terjadi?",
@@ -19,6 +20,17 @@ export const laporId = {
     label: "Cerita kejadian",
     placeholder: "Ceritakan apa yang terjadi, dengan kata-kata Anda sendiri.",
     submit: "Kirim cerita",
+    transcriptReview: "Ini hasil dari rekaman Anda. Periksa dan perbaiki bila perlu, lalu kirim.",
+  },
+  aiConsent: {
+    title: "Pakai bantuan AI?",
+    lines: [
+      "Rekaman suara, cerita, dan video luka dikirim ke layanan AI (Google Gemini) untuk dibaca.",
+      "RAKSA tidak menyimpan rekaman atau videonya.",
+      "Hasil AI hanya saran — Anda tetap memeriksa dan mengubahnya.",
+    ],
+    accept: "Setuju",
+    decline: "Tanpa AI",
   },
   notBite: {
     title: "Sepertinya bukan kasus gigitan",
@@ -55,6 +67,7 @@ export const laporEn: typeof laporId = {
     hints: { when: "When", where: "Where", animal: "Which animal", bodyPart: "Body part", bleeding: "Bleeding?" },
     typeInstead: "Type instead",
     formLink: "Prefer a form? Fill in a short form",
+    aiFailed: "We couldn't read your story automatically. Please type it.",
   },
   typed: {
     title: "What happened?",
@@ -64,6 +77,17 @@ export const laporEn: typeof laporId = {
     label: "What happened",
     placeholder: "Tell us what happened, in your own words.",
     submit: "Send story",
+    transcriptReview: "This is what we heard. Check it, fix anything wrong, then send.",
+  },
+  aiConsent: {
+    title: "Use AI assistance?",
+    lines: [
+      "Your voice recording, story, and wound video are sent to an AI service (Google Gemini) to be read.",
+      "RAKSA does not store the recording or the video.",
+      "AI results are only suggestions — you still check and change them.",
+    ],
+    accept: "Agree",
+    decline: "Without AI",
   },
   notBite: {
     title: "This does not look like a bite case",

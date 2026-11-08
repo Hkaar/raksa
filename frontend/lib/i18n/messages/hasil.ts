@@ -9,6 +9,7 @@ export const hasilId = {
   notSaved: "Kasus belum tersimpan online. Simpan kartu laporan ini dan tunjukkan ke petugas.",
   retry: "Coba kirim lagi",
   resent: "Kasus tersimpan online.",
+  retryFailed: "Masih belum tersimpan. Coba lagi nanti.",
   saveCard: "Simpan kartu laporan",
 }
 
@@ -22,5 +23,6 @@ export const hasilEn: typeof hasilId = {
   notSaved: "The case is not saved online yet. Save this report card and show it to the officer.",
   retry: "Try sending again",
   resent: "Case saved online.",
+  retryFailed: "Still not saved. Try again later.",
   saveCard: "Save report card",
 }

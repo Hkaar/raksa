@@ -27,6 +27,9 @@ import { useI18n } from "@/lib/i18n/provider"
 import type { Case } from "@/lib/types"
 import { requestUserPosition, useUserOrigin } from "@/lib/user-location"
 
+import { getDraft } from "../../../lapor/report-draft"
+import { submitReport } from "../../../lapor/submit-report"
+
 const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const
 
 /**
@@ -65,13 +68,17 @@ export function HasilScreen({ code }: { code: string }) {
     mapBox.current?.scrollIntoView({ behavior: scrollBehavior, block: "nearest" })
   }
 
-  function retry() {
+  async function retry() {
     setRetrying(true)
-    setTimeout(() => {
-      setRetrying(false)
-      router.replace(pathname)
-      toast(copy.resent, { icon: <SavedBadge /> })
-    }, 1000)
+    const outcome = await submitReport(getDraft())
+    setRetrying(false)
+    if (outcome === "failed") {
+      toast.error(copy.retryFailed)
+      return
+    }
+    router.replace(pathname)
+    if (outcome === "saved") toast(copy.resent, { icon: <SavedBadge /> })
+    else toast.warning(m.konfirmasi.notSavedDemo)
   }
 
   const result = (

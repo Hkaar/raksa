@@ -3,9 +3,10 @@
 import { useRef, useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Play, RotateCcw } from "lucide-react"
+import { Play, RotateCcw, VideoOff } from "lucide-react"
 
 import { EditFieldSheet } from "@/components/raksa/edit-field-sheet"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LabeledInput } from "@/components/raksa/labeled-input"
 import { Screen } from "@/components/raksa/screen"
 import woundThumb from "@/public/demo/wound-thumb.png"
@@ -52,7 +53,13 @@ export function ScanResultScreen() {
       <SubpageBar title={copy.title} />
       <div className="flex w-full flex-1 flex-col gap-5 px-5 py-2">
         <ResultSummary
-          title={demo.reportDemo.scanResult.title[locale]}
+          title={
+            draft.scan === null
+              ? demo.reportDemo.scanResult.title[locale]
+              : draft.scan.mode === "ai"
+                ? copy.aiTitle
+                : copy.manualTitle
+          }
           thumb={
             videoUrl ? (
               <button
@@ -87,23 +94,32 @@ export function ScanResultScreen() {
           }
         />
 
-        <Findings title={copy.findings} hint={copy.hint}>
-          <ResultList>
-            {draft.scanRows.map((row) => (
-              <ResultRow
-                key={row.field}
-                label={copy.fields[row.field]}
-                value={row.value[locale]}
-                badge={WARN_FLAGS.includes(row.flag) ? { label: m.enums.scanFlag[row.flag], tone: "soon" } : undefined}
-                onEdit={() => {
-                  setText(row.value[locale])
-                  setEditing(row.field)
-                  setOpen(true)
-                }}
-              />
-            ))}
-          </ResultList>
-        </Findings>
+        {draft.scan?.mode === "manual" ? (
+          <Alert>
+            <VideoOff {...ICON} />
+            <AlertDescription>{copy.manualReason[draft.scan.reason ?? "ai_unavailable"]}</AlertDescription>
+          </Alert>
+        ) : null}
+
+        {draft.scanRows.length > 0 ? (
+          <Findings title={copy.findings} hint={copy.hint}>
+            <ResultList>
+              {draft.scanRows.map((row) => (
+                <ResultRow
+                  key={row.field}
+                  label={copy.fields[row.field]}
+                  value={row.value[locale]}
+                  badge={WARN_FLAGS.includes(row.flag) ? { label: m.enums.scanFlag[row.flag], tone: "soon" } : undefined}
+                  onEdit={() => {
+                    setText(row.value[locale])
+                    setEditing(row.field)
+                    setOpen(true)
+                  }}
+                />
+              ))}
+            </ResultList>
+          </Findings>
+        ) : null}
 
         <Disclaimer>{copy.disclaimer}</Disclaimer>
       </div>

@@ -29,7 +29,7 @@
 - [ ] Selaraskan hasil konfirmasi cerita dengan kontrak persistensi kasus.
 - [ ] Aturan urgensi Python dan validasi oleh tenaga kesehatan.
 - [ ] Rujukan fasilitas dan antrean petugas.
-- [ ] Integrasi frontend dan pengujian alur menyeluruh.
+- [/] Integrasi frontend dan pengujian alur menyeluruh. Tahap 1 (8 Nov 2026): login/shortcut/me/refresh/logout petugas, transkripsi, ekstraksi cerita, scan luka, dan `POST /cases` tersambung dari frontend. Diverifikasi di Chromium dengan server auth palsu (tanpa Supabase): guard antrean, login salah/benar, reload, logout 204, shortcut, toast 503 `auth_unavailable`/shortcut nonaktif, preflight CORS, ekstraksi mode AI (field draft terisi), cerita bukan gigitan, kirim laporan 503 → toast + hasil demo, backend mati → `gagal-simpan` lalu kirim ulang. Dengan Gemini nyata: suara sintetis (espeak, Bahasa Indonesia) → `transcribe` mode AI → teks dapat diedit → `extract` → draft gigitan/anjing/jari_tangan/ya; video dari gambar demo luka → scan mode AI (jari, darah tampak, 1 luka, bekas tusukan + kemerahan); video pola uji → `video_unclear`. Belum diverifikasi: login ke Supabase nyata (`.env` lokal belum berisi `RAKSA_SUPABASE_*`), rekaman suara manusia dan video luka sungguhan. Hasil, antrean, observasi, dan halaman pemilik masih data demo.
 
 Fitur owner ditunda. Jangan tandai selesai hanya karena skema atau kontrak sudah tersedia. Saat menyelesaikan pekerjaan, catat pengujian yang dilakukan serta hal yang masih belum diverifikasi.
 

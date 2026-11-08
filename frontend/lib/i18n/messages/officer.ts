@@ -14,6 +14,10 @@ export const officerId = {
     forgotHelp: "Hubungi koordinator Rabies Center Anda untuk mengatur ulang kata sandi.",
     submit: "Masuk",
     wrongCredentials: "Email atau kata sandi salah.",
+    notOfficer: "Akun ini tidak memiliki akses petugas.",
+    unavailable: "Layanan masuk belum tersedia. Coba lagi nanti.",
+    demo: "Masuk sebagai demo",
+    demoUnavailable: "Akun demo belum diaktifkan di server.",
     help: "Akun petugas dibuat oleh koordinator Rabies Center. Hubungi koordinator Anda bila belum memiliki akses.",
   },
   queue: {
@@ -99,6 +103,10 @@ export const officerEn: typeof officerId = {
     forgotHelp: "Contact your Rabies Center coordinator to reset your password.",
     submit: "Sign in",
     wrongCredentials: "Incorrect email or password.",
+    notOfficer: "This account does not have officer access.",
+    unavailable: "Sign-in service is not available. Try again later.",
+    demo: "Sign in as demo",
+    demoUnavailable: "The demo account is not enabled on the server.",
     help: "Officer accounts are created by the Rabies Center coordinator. Contact your coordinator if you don't have access yet.",
   },
   queue: {

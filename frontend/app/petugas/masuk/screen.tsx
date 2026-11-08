@@ -9,12 +9,13 @@ import { AppHeaderDesktop } from "@/components/raksa/app-header-desktop"
 import { LabeledInput } from "@/components/raksa/labeled-input"
 import { Screen } from "@/components/raksa/screen"
 import { Button } from "@/components/ui/button"
-import { demo } from "@/lib/demo-data"
+import { ApiError, officerLogin, officerShortcut, type LoginResponse } from "@/lib/api"
 import { useI18n } from "@/lib/i18n/provider"
+import { saveOfficerSession } from "@/lib/officer-session"
 
 type Errors = { email?: string; password?: string }
 
-/** Officer sign-in (pen `UTLPY`). Demo account from `demo.meta.officerAccount`; real auth is the backend's. */
+/** Officer sign-in (pen `UTLPY`). Authenticates against the backend `/officer/auth/*`. */
 export function OfficerLoginScreen() {
   const { m } = useI18n()
   const copy = m.officer.login
@@ -23,7 +24,27 @@ export function OfficerLoginScreen() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
+  const [pending, setPending] = useState(false)
   const titleId = useId()
+
+  async function signIn(call: () => Promise<LoginResponse>) {
+    setPending(true)
+    try {
+      saveOfficerSession(await call())
+      router.push("/petugas/antrean")
+    } catch (e) {
+      const status = e instanceof ApiError ? e.status : 0
+      const code = e instanceof ApiError ? e.code : null
+      if (code === "shortcut_unavailable") toast(copy.demoUnavailable)
+      else if (status === 401 || status === 422) {
+        setErrors({ password: copy.wrongCredentials })
+        setPassword("")
+      } else if (status === 403) setErrors({ password: copy.notOfficer })
+      else toast.error(copy.unavailable)
+    } finally {
+      setPending(false)
+    }
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -35,13 +56,7 @@ export function OfficerLoginScreen() {
       })
       return
     }
-    const account = demo.meta.officerAccount
-    if (trimmed.toLowerCase() === account.email && password === account.password) {
-      router.push("/petugas/antrean")
-      return
-    }
-    setErrors({ password: copy.wrongCredentials })
-    setPassword("")
+    void signIn(() => officerLogin(trimmed, password))
   }
 
   return (
@@ -57,7 +72,7 @@ export function OfficerLoginScreen() {
           noValidate
           onSubmit={submit}
           aria-labelledby={titleId}
-          className="flex w-full max-w-[440px] flex-col gap-7 rounded-xl border border-border bg-card p-6 sm:p-10"
+          className="flex w-full max-w-[440px] flex-col gap-7 rounded-xl bg-card p-6 outline-1 -outline-offset-1 outline-border sm:p-10"
         >
           <div className="flex flex-col gap-2">
             <h1 id={titleId} className="text-[32px]/[35px] font-bold text-foreground">
@@ -71,6 +86,8 @@ export function OfficerLoginScreen() {
               type="email"
               inputMode="email"
               autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
               placeholder={copy.emailPlaceholder}
               value={email}
               error={errors.email}
@@ -116,9 +133,22 @@ export function OfficerLoginScreen() {
               </button>
             </div>
           </div>
-          <Button type="submit" className="w-full">
-            {copy.submit}
-          </Button>
+          <div className="flex flex-col items-center gap-2">
+            <Button type="submit" className="w-full" disabled={pending} aria-busy={pending}>
+              {copy.submit}
+            </Button>
+            {/* Not in the design (`UTLPY`): kept as a Button/Teks so the demo sign-in stays reachable. */}
+            <Button
+              type="button"
+              variant="link"
+              size="sm"
+              disabled={pending}
+              aria-busy={pending}
+              onClick={() => void signIn(officerShortcut)}
+            >
+              {copy.demo}
+            </Button>
+          </div>
           <p className="text-sm/[21px] text-muted-foreground">{copy.help}</p>
         </form>
       </div>

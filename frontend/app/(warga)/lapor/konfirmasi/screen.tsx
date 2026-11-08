@@ -4,7 +4,8 @@ import { ArrowRight, Camera, ChevronRight, CircleQuestionMark, LoaderCircle, Mic
 import { AnimatePresence, motion } from "motion/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 import { EditFieldSheet } from "@/components/raksa/edit-field-sheet"
 import { FlowHeader } from "@/components/raksa/flow-header"
@@ -21,6 +22,7 @@ import type { Kecamatan, QuestionField } from "@/lib/types"
 
 import { QuestionChoices } from "../question-field"
 import { updateDraft, useReportDraft, type ReportDraft } from "../report-draft"
+import { submitReport } from "../submit-report"
 
 const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const
 
@@ -52,9 +54,6 @@ export function ConfirmScreen() {
   const [editing, setEditing] = useState<RowKey | null>(null)
   const [temp, setTemp] = useState<Partial<ReportDraft>>({})
   const [submitting, setSubmitting] = useState(false)
-  const timer = useRef<number | undefined>(undefined)
-
-  useEffect(() => () => window.clearTimeout(timer.current), [])
 
   const rows: { key: RowKey; value: string }[] = [
     { key: "event", value: [fmtDayTime(draft.bittenAt, locale), draft.desa].filter(Boolean).join(" · ") },
@@ -94,9 +93,12 @@ export function ConfirmScreen() {
     setEditing(key)
   }
 
-  function confirm() {
+  async function confirm() {
     setSubmitting(true)
-    timer.current = window.setTimeout(() => router.push(`/kasus/${demo.reportDemo.resultCaseCode}/hasil`), 800)
+    const outcome = await submitReport(draft)
+    const target = `/kasus/${demo.reportDemo.resultCaseCode}/hasil`
+    if (outcome === "not_saved") toast.warning(k.notSavedDemo)
+    router.push(outcome === "failed" ? `${target}?keadaan=gagal-simpan` : target)
   }
 
   const merged = { ...draft, ...temp }
