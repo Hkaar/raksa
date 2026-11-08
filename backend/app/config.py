@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     cors_origins: list[str] = []
 
     gemini_api_key: str | None = None
-    gemini_model: str = 'gemini-3.8-flash'
-    gemini_timeout_seconds: int = Field(default=12, ge=1, le=30)
+    gemini_model: str = 'gemini-3.5-flash-lite'
+    gemini_timeout_seconds: int = Field(default=45, ge=1, le=120)
 
     supabase_url: str | None = None
     supabase_publishable_key: str | None = None

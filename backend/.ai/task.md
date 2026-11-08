@@ -9,7 +9,7 @@
 
 ## Scan video — eksperimen
 - [x] Endpoint scan dan fallback manual; pengujian otomatis menggunakan respons Gemini tiruan.
-- [ ] Uji langsung dengan Gemini dan video berizin; catat hasil serta keterbatasannya. Akurasi klinis belum tervalidasi.
+- [/] Uji langsung Gemini dengan satu video contoh berizin: Flash Lite menghasilkan saran visual, model lama timeout. Akurasi klinis belum tervalidasi; uji variasi dan peninjauan tenaga kesehatan masih diperlukan.
 - [ ] Sepakati alur konfirmasi pengguna dan penanganan privasi dengan frontend.
 
 ## Autentikasi petugas

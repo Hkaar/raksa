@@ -75,8 +75,8 @@ Tambahkan kunci ini ke `.env` lokal (jangan ke Git):
 ```dotenv
 RAKSA_GEMINI_API_KEY=isi_kunci_dari_google_ai_studio
 # Opsional:
-RAKSA_GEMINI_MODEL=gemini-3.8-flash
-RAKSA_GEMINI_TIMEOUT_SECONDS=12
+RAKSA_GEMINI_MODEL=gemini-3.5-flash-lite
+RAKSA_GEMINI_TIMEOUT_SECONDS=45
 ```
 
 Contoh panggilan dari Git Bash:
@@ -230,3 +230,5 @@ Jika Gemini gagal atau key tidak tersedia, respons 200 dengan `mode: manual` dan
 Audio, cerita, dan hasil ekstraksi tidak disimpan oleh endpoint ini. Endpoint kasus masih 503; penyimpanan laporan belum terhubung. Jangan mengirim seluruh `suggestion` langsung ke `POST /cases`: kontraknya berbeda. Pemetaan hasil konfirmasi, termasuk waktu/lokasi/luka, perlu diselaraskan saat integrasi persistensi. Tes otomatis memakai respons tiruan, bukan pengukuran akurasi transkripsi/model live.
 
 Rujukan resmi: [audio Gemini](https://ai.google.dev/gemini-api/docs/audio) dan [structured output](https://ai.google.dev/gemini-api/docs/structured-output).
+
+Jika scan mengembalikan `ai_unavailable`, periksa model dan timeout di `.env`, lalu restart Uvicorn setelah `.env` diubah. Backend mencatat jenis kegagalan provider tanpa isi video atau API key. Model `gemini-3.5-flash-lite` berhasil diuji dengan video contoh pada 8 November 2026; hasil visual tetap perlu konfirmasi pengguna.

@@ -38,3 +38,5 @@ Simpan kredensial di `.env`, jangan cetak atau bagikan nilainya. Sebelum mengiri
 - **Batasan integrasi:** audio maksimum 8 MiB; frontend membatasi rekaman satu menit, durasi belum divalidasi backend. Waktu/lokasi diekstrak sebagai frasa tanpa menebak tanggal/koordinat; detail yang tidak dinyatakan tetap null. Endpoint kasus masih 503 dan kontrak penyimpanan perlu diselaraskan dengan hasil konfirmasi.
 
 - **Perubahan struktur:** seluruh aplikasi backend, requirements, dokumen, `.ai/`, `.env`, dan environment Python dipindahkan ke `backend/` agar repo dapat menampung frontend. Git tetap pada root; jalankan Uvicorn, seed dan tes dari `backend/`. Tidak mengubah URL endpoint.
+
+- **Perubahan model Gemini:** pengujian langsung 8 November 2026 menunjukkan `gemini-3.8-flash` timeout untuk permintaan teks sederhana, sementara `gemini-3.5-flash-lite` berhasil memproses video contoh. Default model dan `.env` lokal diubah ke Flash Lite; default timeout menjadi 45 detik. Log hanya mencatat jenis error/status, tanpa media atau key. Ini bukan validasi klinis.

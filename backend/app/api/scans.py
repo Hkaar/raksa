@@ -1,6 +1,7 @@
 """Accept short browser-recorded video without persisting the raw media."""
 
 import asyncio
+import logging
 
 from fastapi import APIRouter, HTTPException, Request
 
@@ -46,7 +47,9 @@ async def scan_wound(request: Request, reported_event: ReportedEvent = 'unknown'
             analyze_video, bytes(video), mime_type, settings.gemini_api_key,
             settings.gemini_model, settings.gemini_timeout_seconds, reported_event,
         )
-    except VisionUnavailable:
+    except VisionUnavailable as error:
+        cause = error.__cause__
+        logging.getLogger(__name__).warning('Gemini scan failed: %s, HTTP status: %s', type(cause).__name__, getattr(cause, 'code', None))
         return WoundScanResponse(mode='manual', suggestion=None, reason='ai_unavailable')
     if suggestion.video_quality == 'poor':
         return WoundScanResponse(mode='manual', suggestion=None, reason='video_unclear')
